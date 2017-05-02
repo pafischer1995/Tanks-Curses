@@ -1,11 +1,13 @@
 #include "curses.h"
 #include "ground.hpp"
 
+//this is where lines, cols, base_height_divisor, and max_heigh_divisor are created
 int lines = 40;
 int cols = 120;
 int base_height_divisor = 8;
 int max_height_divisor = 2;
 
+//ground was initialized in ground.hpp
 void Ground::InitializeGround()
 {
 	int current_height = lines - lines / base_height_divisor;
@@ -28,6 +30,7 @@ void Ground::InitializeGround()
 	}
 }
 
+//
 void Ground::Draw()
 {
 	for (size_t i = 0; i < ground.size(); i++) {

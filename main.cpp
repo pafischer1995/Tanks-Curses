@@ -32,7 +32,7 @@ extern int max_height_divisor;
 const double PI = 3.141592653589793238463;
 
 
-
+//this draws the game onto the screen so we can see it
 void DrawScreen(Ground & g, Player * players, int turn)
 {
 	erase();
@@ -48,7 +48,8 @@ void DrawScreen(Ground & g, Player * players, int turn)
 //http://www.iforce2d.net/b2dtut/projected-trajectory
 
 
-
+//this function shoots bullet
+//projects the path of the bullet as *
 void Shoot(Ground & g, Player * players, int turn)
 {
 	double angle = players[turn].angle / 180.0 * PI;
@@ -58,13 +59,16 @@ void Shoot(Ground & g, Player * players, int turn)
 	double pNx;
 	double pNy;
 
+	//flips the bullet if it's the player on the other side of the screen
 	if (players[turn].s == RIGHT)
 		x_component = -x_component;
 
 	double p0x = players[turn].col;
 	double p0y = g.ground.at(players[turn].col);
 	// higher ground numbers are lower altitudes (0 is first line, etc).
+
 	p0y = lines - p0y;
+
 	for (int i = 1; i < 5000; i++)
 	{
 		double di = i / 5.0;
@@ -98,6 +102,7 @@ int main(int argc, char * argv[])
 
 	int turn = 0;
 	bool keep_going = true;
+
 	Ground g;
 	Player players[2];
 
@@ -111,6 +116,7 @@ int main(int argc, char * argv[])
 	players[1].Initialize(rand() % (cols / 4) + 3 * cols / 4 - 2, RIGHT);
 
 	DrawScreen(g, players, turn);
+
 	while (keep_going)
 	{
 		bool show_char = false;
@@ -178,6 +184,7 @@ int main(int argc, char * argv[])
 //- credits
 //- End Game Screen
 //- a visual on number of lives for player
+//if ground is gone beneath player but he still has health, he dies
 
 /*
 ASCII code 176 = ░ ( Graphic character, low density dotted )

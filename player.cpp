@@ -21,22 +21,26 @@ Player::Player()
 	power = 50.0;
 }
 
+//constructor, only runs on start up
 void Player::Initialize(int column, Side side)
 {
 	col = column;
 	s = side;
 }
 
+//constructor, only runs on start up
 void Player::Draw(Ground & g)
 {
 	mvaddch(g.ground.at(col) - 1, col + 1, '@');
 }
 
+//constructor, only runs on start up
 void Player::PowerUp()
 {
 	power += power_increment;
 }
 
+//constructor, only runs on start up
 void Player::PowerDown()
 {
 	power -= power_increment;
@@ -44,6 +48,7 @@ void Player::PowerDown()
 		power = power_increment;
 }
 
+//constructor, only runs on start up
 void Player::AngleUp()
 {
 	angle += angle_increment;
@@ -51,6 +56,7 @@ void Player::AngleUp()
 		angle = 90.0;
 }
 
+//constructor, only runs on start up
 void Player::AngleDown()
 {
 	angle -= angle_increment;
@@ -58,6 +64,7 @@ void Player::AngleDown()
 		angle = 0.0;
 }
 
+//constructor, only runs on start up
 void Player::DrawSettings(int turn)
 {
 	bool my_turn = (turn == 0 && s == LEFT) || (turn == 1 && s == RIGHT);
@@ -72,7 +79,7 @@ void Player::DrawSettings(int turn)
 
 	if (my_turn)
 		attron(A_STANDOUT);
-	ss << setw(10) << left << "Player:" << player;
+	ss << setw(10) << left << "Player: " << player;
 	mvaddstr(line++, starting_column, ss.str().c_str());
 	if (my_turn)
 		attroff(A_STANDOUT);
