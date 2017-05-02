@@ -1,3 +1,9 @@
+﻿//Paul A. Fischer, Don Jervis, Nick Ressler
+//Computer Science II, Perry Kivolowitz
+//Final Project, 4/27/17-5/9/17
+//Tanks
+
+
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -6,18 +12,26 @@
 #include <cmath>
 #include <Windows.h>
 
+#if defined(WIN32)
 #include "curses.h"
 #include "ground.hpp"
 #include "player.hpp"
+#else
+#include <curses.h>
+#include <ground.hpp>
+#include <player.hpp>
+#endif
 
 using namespace std;
 
-extern int lines;
+extern int lines;					//extern means there is a global variable somewhere, but it isn't located here (located in ground.cpp)
 extern int cols;
 extern int base_height_divisor;
 extern int max_height_divisor;
 
 const double PI = 3.141592653589793238463;
+
+
 
 void DrawScreen(Ground & g, Player * players, int turn)
 {
@@ -33,12 +47,14 @@ void DrawScreen(Ground & g, Player * players, int turn)
 
 //http://www.iforce2d.net/b2dtut/projected-trajectory
 
+
+
 void Shoot(Ground & g, Player * players, int turn)
 {
 	double angle = players[turn].angle / 180.0 * PI;
 	double y_component = sin(angle) * players[turn].power * 0.2;
 	double x_component = cos(angle) * players[turn].power * 0.2;
-	
+
 	double pNx;
 	double pNy;
 
@@ -62,8 +78,8 @@ void Shoot(Ground & g, Player * players, int turn)
 			Sleep(50);
 			continue;
 		}
-	//	if (pNy >= lines - 2)
-	//		break;
+		//	if (pNy >= lines - 2)
+		//		break;
 		if (pNy > g.ground.at((int)pNx))
 			break;
 
@@ -73,6 +89,8 @@ void Shoot(Ground & g, Player * players, int turn)
 		Sleep(50);
 	}
 }
+
+
 
 int main(int argc, char * argv[])
 {
@@ -147,3 +165,38 @@ int main(int argc, char * argv[])
 	endwin();
 	return 0;
 }
+
+
+//extra credit Ideas
+//- choose amount of players
+//- wind
+//- smooth ground
+//- ground desctruction
+//- look to see if you can change the color of a tank(s)
+//- see if you can get a visual for shooting
+//- move/gas
+//- credits
+//- End Game Screen
+//- a visual on number of lives for player
+
+/*
+ASCII code 176 = ░ ( Graphic character, low density dotted )
+ASCII code 177 = ▒ ( Graphic character, medium density dotted )
+ASCII code 178 = ▓ ( Graphic character, high density dotted )
+empty heart &#9825;
+full heart  &#9829;
+*/
+
+/*
+Notes:
+linker allows us to attach different source files together. for this project we have three.
+-main
+-ground
+-player
+*/
+
+//how player will lose health
+//-so low power that it falls in radius and kills him
+//-wind pushes it back and it hits him
+//-other player hits him
+//-shoots straight up (no wind) and it comes down and hits him.
