@@ -1,4 +1,4 @@
-﻿//Paul A. Fischer, Don Jervis, Nick Ressler
+﻿//Paul A. Fischer, Don Jervis
 //Computer Science II, Perry Kivolowitz
 //Final Project, 4/27/17-5/9/17
 //Tanks
