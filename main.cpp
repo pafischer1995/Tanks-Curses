@@ -98,78 +98,140 @@ void Shoot(Ground & g, Player * players, int turn)
 
 int main(int argc, char * argv[])
 {
-	srand((unsigned int)time(nullptr));
-
-	int turn = 0;
-	bool keep_going = true;
-
-	Ground g;
-	Player players[2];
-
-	initscr();
-	noecho();
-	resize_term(lines, cols);
-	keypad(stdscr, 1);
-
-	g.InitializeGround();
-	players[0].Initialize(rand() % (cols / 4), LEFT);
-	players[1].Initialize(rand() % (cols / 4) + 3 * cols / 4 - 2, RIGHT);
-
-	DrawScreen(g, players, turn);
-
-	while (keep_going)
+	while (true)
 	{
-		bool show_char = false;
-		int c = getch();
-		switch (c)
-		{
-		case 27:
-			keep_going = false;
-			break;
+		srand((unsigned int)time(nullptr));
 
-		case '<':
-			players[turn].PowerDown();
-			break;
+		int turn = 0;
+		bool keep_going = true;
 
-		case '>':
-			players[turn].PowerUp();
-			break;
+		Ground g;
+		Player players[2];
 
-		case 'u':
-			players[turn].AngleUp();
-			break;
+		initscr();
+		noecho();
+		resize_term(lines, cols);
+		keypad(stdscr, 1);
+		curs_set(0);
 
-		case 'd':
-			players[turn].AngleDown();
-			break;
+		g.InitializeGround();
+		players[0].Initialize(rand() % (cols / 4), LEFT);
+		players[1].Initialize(rand() % (cols / 4) + 3 * cols / 4 - 2, RIGHT);
 
-		case 10:
-		case KEY_ENTER:
-		case PADENTER:
-			Shoot(g, players, turn);
-			turn = 1 - turn;
-			break;
-
-		default:
-			show_char = true;
-			break;
-		}
 		DrawScreen(g, players, turn);
-		if (show_char) {
-			move(0, 1);
-			stringstream ss;
-			ss << setw(4) << c << " ";
-			addstr(ss.str().c_str());
-			refresh();
+
+
+		while (keep_going)
+		{
+
+			bool show_char = false;
+			int c = getch();
+			switch (c)
+			{
+			case 27:
+				keep_going = false;
+				break;
+
+				//			L							2
+				//	     C-    C					4		5
+				//			L-							3
+				
+
+			case KEY_LEFT:		//left arrow
+			case '<':
+				players[turn].PowerDown();
+				break;
+
+			case KEY_RIGHT:		//right arrow
+			case '>':
+				players[turn].PowerUp();
+				break;
+
+			case KEY_UP:		//up arrow
+			case 'u':
+				players[turn].AngleUp();
+				break;
+
+			case KEY_DOWN:		//down arrow
+			case 'd':
+				players[turn].AngleDown();
+				break;
+
+			case 10:
+			case KEY_ENTER:
+			case PADENTER:
+				Shoot(g, players, turn);
+				turn = 1 - turn;
+				break;
+
+			case 'q':
+			case 'Q':
+				keep_going = false;
+				break;
+
+			default:
+				show_char = true;
+				break;
+			}
+
+
+			DrawScreen(g, players, turn);
+			if (show_char) {
+				move(0, 1);
+				stringstream ss;
+				ss << setw(4) << c << " ";
+				addstr(ss.str().c_str());
+				refresh();
+			}
+			
 		}
+		/*
+		erase();
+		addstr("Hit any key to exit");
+		refresh();
+		getch();
+		echo();
+		*/
+		endwin();	//terminates your game, you can use cout after this.
+
+		string whitespace;
+		whitespace = "\t\t\t\t\t";
+
+
+		cout << whitespace << "  ________    _____      _____  ___________ " << endl;
+		cout << whitespace << " /  _____/   /  _  \\    /     \\ \\_   _____/ " << endl;
+		cout << whitespace << "/   \\  ___  /  /_\\  \\  /  \\ /  \\ |    __)_  " << endl;
+		cout << whitespace << "\\    \\_\\  \\/    |    \\/    Y    \\|        \\ " << endl;
+		cout << whitespace << " \\______  /\\____|__  /\\____|__  /_______  / " << endl;
+		cout << whitespace << "        \\/         \\/         \\/        \\/  " << endl;
+		cout << whitespace << "____________   _________________________    " << endl;
+		cout << whitespace << "\\_____  \\   \\ /   /\\_   _____/\\______   \\   " << endl;
+		cout << whitespace << " /   |   \\   Y   /  |    __)_  |       _/   " << endl;
+		cout << whitespace << "/    |    \\     /   |        \\ |    |   \\   " << endl;
+		cout << whitespace << "\\_______  /\\___/   /_______  / |____|_  /   " << endl;
+		cout << whitespace << "        \\/                 \\/         \\/    " << endl;
+		cout << "\n\n" << endl;
+		cout << whitespace << " Created by: Paul Fischer & Don Jervis" << endl;
+		cout << whitespace << "   Player INSERT WINNING PLAYER wins!" << endl;
+		cout << whitespace << "	   Play Again? Y/N \n\n" << endl;
+
+		char input;
+		cin >> input;
+
+		if ((input == 'y') || (input == 'Y'))
+		{
+			continue;
+		}
+		else
+		{
+			break;
+		}
+
+#if defined(WIN32)
+		system("pause");
+#endif
+		return 0;
 	}
-	erase();
-	addstr("Hit any key to exit");
-	refresh();
-	getch();
-	echo();
-	endwin();
-	return 0;
 }
 
 
@@ -181,8 +243,6 @@ int main(int argc, char * argv[])
 //- look to see if you can change the color of a tank(s)
 //- see if you can get a visual for shooting
 //- move/gas
-//- credits
-//- End Game Screen
 //- a visual on number of lives for player
 //if ground is gone beneath player but he still has health, he dies
 

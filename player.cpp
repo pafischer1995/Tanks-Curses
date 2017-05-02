@@ -13,6 +13,7 @@ extern int max_height_divisor;
 const int Player::power_increment = 1;
 const double Player::angle_increment = 1;
 
+//this is only incremented the first time
 Player::Player()
 {
 	s = LEFT;
@@ -21,26 +22,26 @@ Player::Player()
 	power = 50.0;
 }
 
-//constructor, only runs on start up
+
 void Player::Initialize(int column, Side side)
 {
 	col = column;
 	s = side;
 }
 
-//constructor, only runs on start up
+
 void Player::Draw(Ground & g)
 {
 	mvaddch(g.ground.at(col) - 1, col + 1, '@');
 }
 
-//constructor, only runs on start up
+
 void Player::PowerUp()
 {
 	power += power_increment;
 }
 
-//constructor, only runs on start up
+
 void Player::PowerDown()
 {
 	power -= power_increment;
@@ -48,7 +49,7 @@ void Player::PowerDown()
 		power = power_increment;
 }
 
-//constructor, only runs on start up
+
 void Player::AngleUp()
 {
 	angle += angle_increment;
@@ -56,7 +57,6 @@ void Player::AngleUp()
 		angle = 90.0;
 }
 
-//constructor, only runs on start up
 void Player::AngleDown()
 {
 	angle -= angle_increment;
@@ -64,7 +64,6 @@ void Player::AngleDown()
 		angle = 0.0;
 }
 
-//constructor, only runs on start up
 void Player::DrawSettings(int turn)
 {
 	bool my_turn = (turn == 0 && s == LEFT) || (turn == 1 && s == RIGHT);
