@@ -36,7 +36,8 @@ void Player::Initialize(int column, Side side)
 //not moving
 void Player::Draw(Ground & g)
 {
-	mvaddch(g.ground.at(col) - 1, col + 1, '@');
+	char pl = 96;
+	mvaddch(g.ground.at(col) - 1, col + 1, ACS_DIAMOND);
 }
 
 

@@ -91,7 +91,7 @@ void Shoot(Ground & g, Player * players, int turn)
 			break;
 
 		move((int)pNy - 1, (int)pNx + 1);
-		addch('*');
+		addch(ACS_BULLET);
 		refresh();
 		Sleep(50);
 	}
@@ -471,6 +471,12 @@ int main(int argc, char * argv[])
 				case KEY_ENTER:
 				case PADENTER:
 					Shoot(g, players, turn);
+					//this makes it so each player regenerates one gas a turn unless at max tank size
+					if (players[turn].gas < 5)
+					{
+						players[turn].gas++;
+					}
+
 					turn = 1 - turn;
 					break;
 
@@ -564,10 +570,12 @@ int main(int argc, char * argv[])
 //- wind
 //- ground desctruction
 //- look to see if you can change the color of a tank(s)
+//player names
 //- see if you can get a visual for shooting
 //- move/gas
 //-different terrains in the settings
 //bombs and armour
+//end of bullet disappear after it's 10 long
 
 /*
 ASCII code 176 = ░ ( Graphic character, low density dotted )
@@ -579,4 +587,5 @@ ASCII code 178 = ▓ ( Graphic character, high density dotted )
 //-wind pushes it back and it hits him
 //-other player hits him
 //-shoots straight up (no wind) and it comes down and hits him.
+//these all have to do with the same thing, if the bomb is within radius of EITHER tank, the tank takes damage
 */
