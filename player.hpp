@@ -18,10 +18,13 @@ public:
 	void PowerDown();
 	void AngleUp();
 	void AngleDown();
-
+	
+	int gas;
+	int health;
 	int col;
 	double power;
 	double angle;
+	
 	Side s;
 
 	static const int power_increment;

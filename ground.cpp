@@ -26,6 +26,7 @@ void Ground::InitializeGround()
 			if (current_height < 1)
 				current_height = 1;
 		}
+
 		ground.push_back(h);
 	}
 }
@@ -33,7 +34,21 @@ void Ground::InitializeGround()
 //
 void Ground::Draw()
 {
-	for (size_t i = 0; i < ground.size(); i++) {
-		mvaddch(ground.at(i), i + 1, '-');
+	//goes from left to right. + rows and cols
+	mvaddch(ground.at(0), 1, '_');
+	for (size_t i = 1; i < ground.size(); i++) 
+	{
+		if (ground.at(i) > ground.at(i-1))
+		{
+			mvaddch(ground.at(i), i + 1, '\\');
+		}
+		
+		else if (ground.at(i) < ground.at(i-1))
+		{
+			mvaddch(ground.at(i)+1 , i + 1, '/');
+		}
+		
+		else
+		mvaddch(ground.at(i), i + 1, '_');
 	}
 }

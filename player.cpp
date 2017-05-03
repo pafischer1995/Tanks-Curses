@@ -2,6 +2,8 @@
 #include <iomanip>
 #include "curses.h"
 #include "player.hpp"
+#include <locale.h>
+#include <clocale>
 
 using namespace std;
 
@@ -20,6 +22,8 @@ Player::Player()
 	col = 0;
 	angle = 45.0;
 	power = 50.0;
+	health = 3;
+	gas = 5;
 }
 
 
@@ -29,11 +33,12 @@ void Player::Initialize(int column, Side side)
 	s = side;
 }
 
-
+//not moving
 void Player::Draw(Ground & g)
 {
 	mvaddch(g.ground.at(col) - 1, col + 1, '@');
 }
+
 
 
 void Player::PowerUp()
@@ -64,6 +69,8 @@ void Player::AngleDown()
 		angle = 0.0;
 }
 
+
+
 void Player::DrawSettings(int turn)
 {
 	bool my_turn = (turn == 0 && s == LEFT) || (turn == 1 && s == RIGHT);
@@ -89,5 +96,30 @@ void Player::DrawSettings(int turn)
 	
 	ss = stringstream();
 	ss << setw(10) << left << "Power: " << setw(6) << power;
+	
 	mvaddstr(line++, starting_column, ss.str().c_str());
+	
+	ss = stringstream();
+	for (unsigned int i = 0; i < health; i++)
+	{
+		ss << "X ";
+	}
+	mvaddstr(line++, starting_column, ss.str().c_str());
+
+	ss = stringstream();
+	if (gas != 0)
+	{
+		for (unsigned int i = 0; i < gas; i++)
+		{
+			char gas = 254;
+			ss << gas << " ";
+		}
+		mvaddstr(line++, starting_column, ss.str().c_str());
+	}
+	else
+	{
+		ss << "Out of Gas.";
+		mvaddstr(line, starting_column, ss.str().c_str());
+	}
+	
 }
