@@ -52,7 +52,7 @@ void DrawScreen(Ground & g, Player * players, int turn)
 
 
 //this function shoots bullet
-//projects the path of the bullet as *
+//projects the path of the bullet as ACS_BULLET(before was *)
 void Shoot(Ground & g, Player * players, int turn)
 {
 	double angle = players[turn].angle / 180.0 * PI;
@@ -382,9 +382,16 @@ int main(int argc, char * argv[])
 				Settings();
 			}
 
-			//player
+			//play
 			else if (x == 1)
 			{
+				//gets rid of flash when P is pressed
+				erase();
+				refresh();
+				initscr();
+				noecho();
+				keypad(stdscr, 1);
+				refresh();
 				break;
 			}
 		}
@@ -484,10 +491,10 @@ int main(int argc, char * argv[])
 					//move left
 				case 'a':
 				case 'A':
-					players[turn].AngleUp();
 					if (players[turn].gas > 0)
 					{
 						//move, subtract gas
+						players[turn].col--;
 						players[turn].gas--;
 						break;
 					}
@@ -497,10 +504,10 @@ int main(int argc, char * argv[])
 					//move right
 				case 'd':
 				case 'D':
-					players[turn].AngleDown();
 					if (players[turn].gas > 0)
 					{
 						//move, subtract gas
+						players[turn].col++;
 						players[turn].gas--;
 						break;
 					}
@@ -535,7 +542,7 @@ int main(int argc, char * argv[])
 			echo();
 			endwin();	//terminates your game, you can use cout after this.
 
-
+			//play game over screen (not ncurses)
 			GameOver();
 
 
@@ -576,6 +583,8 @@ int main(int argc, char * argv[])
 //-different terrains in the settings
 //bombs and armour
 //end of bullet disappear after it's 10 long
+//fill ground with ASCII Table below, or ACS_CKBOARD
+//maybe teams & FFA 4 tank?
 
 /*
 ASCII code 176 = ░ ( Graphic character, low density dotted )
@@ -588,4 +597,6 @@ ASCII code 178 = ▓ ( Graphic character, high density dotted )
 //-other player hits him
 //-shoots straight up (no wind) and it comes down and hits him.
 //these all have to do with the same thing, if the bomb is within radius of EITHER tank, the tank takes damage
+
+//drawscreen seems to be where to modify ground
 */
