@@ -19,9 +19,11 @@ public:
 	void AngleUp();
 	void AngleDown();
 	
+	bool win_check;
 	int gas;
 	int health;
 	int col;
+	int line;
 	double power;
 	double angle;
 	

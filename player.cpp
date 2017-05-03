@@ -20,10 +20,12 @@ Player::Player()
 {
 	s = LEFT;
 	col = 0;
-	angle = 45.0;
+	line = 0;
+	angle = 35.0;
 	power = 50.0;
 	health = 3;
 	gas = 5;
+	win_check = false;
 }
 
 
@@ -36,8 +38,10 @@ void Player::Initialize(int column, Side side)
 //not moving
 void Player::Draw(Ground & g)
 {
-	char pl = 96;
 	mvaddch(g.ground.at(col) - 1, col + 1, ACS_DIAMOND);
+
+	//in case there is ever a situation where land is floating above, or they hit the land below, they don't die for being in same column
+	line = g.ground.at(col) - 1;
 }
 
 

@@ -35,6 +35,7 @@ extern int max_height_divisor;
 const double PI = 3.141592653589793238463;
 
 
+
 //this draws the game onto the screen so we can see it
 void DrawScreen(Ground & g, Player * players, int turn)
 {
@@ -53,13 +54,18 @@ void DrawScreen(Ground & g, Player * players, int turn)
 
 //this function shoots bullet
 //projects the path of the bullet as ACS_BULLET(before was *)
-void Shoot(Ground & g, Player * players, int turn)
+//it wants to know where the ground is, where the player is, and whos turn it is
+void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 {
+
+
 	double angle = players[turn].angle / 180.0 * PI;
+	//vertical
 	double y_component = sin(angle) * players[turn].power * 0.2;
+	//horizontal
 	double x_component = cos(angle) * players[turn].power * 0.2;
 
-	double pNx;
+	double pNx;		//position new x and new y?
 	double pNy;
 
 	//flips the bullet if it's the player on the other side of the screen
@@ -71,6 +77,8 @@ void Shoot(Ground & g, Player * players, int turn)
 	// higher ground numbers are lower altitudes (0 is first line, etc).
 
 	p0y = lines - p0y;
+
+	int bullet_length = 0;
 
 	for (int i = 1; i < 5000; i++)
 	{
@@ -90,13 +98,75 @@ void Shoot(Ground & g, Player * players, int turn)
 		if (pNy > g.ground.at((int)pNx))
 			break;
 
-		move((int)pNy - 1, (int)pNx + 1);
-		addch(ACS_BULLET);
-		refresh();
-		Sleep(50);
+		
+
+		//these 2 lines make it only 1 long
+		//try to create tail that is 5 long at all times (not yet)
+			if (bullet_length < 3)
+			{
+				bullet_length++;
+				move((int)pNy - 1, (int)pNx + 1);
+				addch(ACS_BULLET);
+			}
+			else
+			{
+				erase();
+				DrawScreen(g, players, turn);
+				bullet_length = 0;
+				move((int)pNy - 1, (int)pNx + 1);
+				addch(ACS_BULLET);
+			}
+			
+			refresh();
+			Sleep(50);
+	}
+						//pNx is left and right, pNy is up and down, 0,0 is top left
+	bih = pNx;
+	biv = pNy - 1;
+
+	stringstream ss;
+	ss = stringstream();
+	ss << "col: " << bih;
+	move(1, COLS / 2 - 3);
+	addstr(ss.str().c_str());
+	refresh();
+
+	ss = stringstream();
+	ss << "line: " << biv;
+	move(2, COLS / 2 - 3);
+	addstr(ss.str().c_str());
+	refresh();
+
+	Sleep(1200);
+
+	//if bomb is within 1 column in either direction of player 1 or on the column
+	if (bih == players[0].col || bih == players[0].col +1 || bih == players[0].col - 1)
+	{
+		if (biv == players[0].line || biv == players[0].line + 1 || biv == players[0].line - 1)
+		{
+			players[0].health--;
+		}
+	}
+
+	//if bomb is within 1 column in either direction of player 2
+	if (bih == players[1].col || bih == players[1].col +1 || bih == players[1].col - 1)
+	{
+		if (biv == players[1].line || biv == players[1].line + 1 || biv == players[1].line - 1)
+		{
+			players[1].health--;
+		}
+	}
+
+	if (players[0].health == 0)
+	{
+		players[1].win_check = true;
+	}
+
+	if (players[1].health == 0)
+	{
+		players[0].win_check = true;
 	}
 }
-
 
 int MainMenu()
 {
@@ -308,7 +378,7 @@ void Settings()
 
 }
 
-void GameOver()
+void GameOver(string w)
 {
 	string whitespace;
 	whitespace = "\t\t\t\t\t";
@@ -327,8 +397,14 @@ void GameOver()
 	cout << whitespace << "\\_______  /\\___/   /_______  / |____|_  /   " << endl;
 	cout << whitespace << "        \\/                 \\/         \\/    " << endl;
 	cout << "\n" << endl;
-
-	cout << whitespace << "   Player INSERT WINNING PLAYER wins!" << endl;
+	if (w == "Draw")
+	{
+		cout << whitespace << "\t\t  " << w << endl;
+	}
+	else
+	{
+		cout << whitespace << "\t  Player " << w << " wins!" << endl;
+	}
 	cout << "\n" << endl;
 	cout << whitespace << "	     Play Again? Y/N \n\n" << endl;
 	cout << "\n\n\n\n" << endl;
@@ -409,6 +485,7 @@ int main(int argc, char * argv[])
 
 			int turn = 0;
 			bool keep_going = true;
+			string w = "Draw";
 
 			Ground g;
 			Player players[2];
@@ -425,12 +502,17 @@ int main(int argc, char * argv[])
 
 			DrawScreen(g, players, turn);
 
-
+			
 
 			while (keep_going)
 			{
 
 				int x = turn;
+				int winner_check = 0;
+
+				//keep bullet in loop so that it doesn't hurt player 2 rounds in a row
+				int  bullet_impact_horizontal = 0;
+				int  bullet_impact_vertical = 0;
 
 				bool show_char = false;
 				int c = getch();
@@ -477,7 +559,7 @@ int main(int argc, char * argv[])
 				case 10:
 				case KEY_ENTER:
 				case PADENTER:
-					Shoot(g, players, turn);
+					Shoot(g, players, turn, bullet_impact_horizontal, bullet_impact_vertical);
 					//this makes it so each player regenerates one gas a turn unless at max tank size
 					if (players[turn].gas < 5)
 					{
@@ -525,15 +607,29 @@ int main(int argc, char * argv[])
 					break;
 				}
 
-
 				DrawScreen(g, players, turn);
-				if (show_char) {
+
+				if (show_char)
+				{
 					move(0, 1);
 					stringstream ss;
 					ss << setw(4) << c << " ";
 					addstr(ss.str().c_str());
 					refresh();
 				}
+
+				if (players[0].win_check == true)
+				{
+					w = "Player 1";
+					keep_going = false;
+				}
+
+				if (players[1].win_check == true)
+				{
+					w = "Player 2";
+					keep_going = false;
+				}
+				
 
 			}
 
@@ -543,7 +639,7 @@ int main(int argc, char * argv[])
 			endwin();	//terminates your game, you can use cout after this.
 
 			//play game over screen (not ncurses)
-			GameOver();
+			GameOver(w);
 
 
 			char input;
@@ -571,32 +667,26 @@ int main(int argc, char * argv[])
 	}
 }
 
+//left to be implemented: ground destruction
 
 //extra credit Ideas
 
 //- wind
 //- ground desctruction
 //- look to see if you can change the color of a tank(s)
-//player names
+//- player names
 //- see if you can get a visual for shooting
-//- move/gas
 //-different terrains in the settings
-//bombs and armour
-//end of bullet disappear after it's 10 long
-//fill ground with ASCII Table below, or ACS_CKBOARD
-//maybe teams & FFA 4 tank?
+//- bombs and armour
+
+//choose how much health and gas you have (up to 5 and 10)
 
 /*
+//fill ground with ASCII Table below, or ACS_CKBOARD
+Possibly populate ground with these (depending on density maybe?)
 ASCII code 176 = ░ ( Graphic character, low density dotted )
 ASCII code 177 = ▒ ( Graphic character, medium density dotted )
 ASCII code 178 = ▓ ( Graphic character, high density dotted )
 
-//how player will lose health
-//-so low power that it falls in radius and kills him
-//-wind pushes it back and it hits him
-//-other player hits him
-//-shoots straight up (no wind) and it comes down and hits him.
-//these all have to do with the same thing, if the bomb is within radius of EITHER tank, the tank takes damage
-
-//drawscreen seems to be where to modify ground
+drawscreen seems to be where to modify ground
 */
