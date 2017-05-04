@@ -31,7 +31,6 @@ void Ground::InitializeGround()
 	}
 }
 
-//
 void Ground::Draw()
 {
 	//goes from left to right. + rows and cols
@@ -50,5 +49,10 @@ void Ground::Draw()
 		
 		else
 		mvaddch(ground.at(i), i + 1, '_');
+
+		//make one for straight up '|'
+		//to do this you have to make sure that they are on the same "line"
+		//if you come across one of these you can't move past
 	}
 }
+
