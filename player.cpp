@@ -116,7 +116,7 @@ void Player::DrawSettings(int turn)
 		for (unsigned int i = 0; i < gas; i++)
 		{
 			char gas = 254;
-			ss << gas << " ";
+			ss << left << gas;
 		}
 		mvaddstr(line++, starting_column, ss.str().c_str());
 	}

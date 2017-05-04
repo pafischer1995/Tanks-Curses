@@ -294,13 +294,12 @@ void Settings(Player & players)
 
 	bool keep_going = true;
 
+
 	while (keep_going == true)
 	{
-		
 		erase();
 		refresh();
 		noecho();
-
 
 		stringstream ss;
 		ss << setw(10) << left << "Player 1";
@@ -370,12 +369,12 @@ void Settings(Player & players)
 		addstr(ss.str().c_str());
 
 		ss = stringstream();
-		ss << setw(10) << right << "(H) Starting Health \t<" << players.health << ">";
+		ss << setw(10) << right << "(H) Starting Health \t<" << Player().health << ">";
 		move(25, 9);
 		addstr(ss.str().c_str());
 
 		ss = stringstream();
-		ss << setw(10) << right << "(P) Starting Petrol \t<" << players.gas << ">";
+		ss << setw(10) << right << "(P) Starting Petrol \t<" << Player().gas << ">";
 		move(27, 9);
 		addstr(ss.str().c_str());
 
@@ -383,6 +382,7 @@ void Settings(Player & players)
 		ss << "(B) Back";
 		move(LINES - 2, COLS - 10);
 		addstr(ss.str().c_str());
+
 
 		char c = getch();
 		switch (c)
@@ -393,24 +393,17 @@ void Settings(Player & players)
 			keep_going = false;
 			break;
 
-			//change starting petrol up to 10
-			//it changes but doesn't show up until you exit and re enter settings
+
 		case 'p':
 		case 'P':
-		if (gas_toggle < 5)
+		if (gas_toggle < 10)
 			{
 				gas_toggle++;
-				erase();
-				refresh();
-				noecho();
 				break;
 			}
-		if (gas_toggle == 5)
+		else if (gas_toggle == 10)
 		{
-			gas_toggle = -4;
-			erase();
-			refresh();
-			noecho();
+			gas_toggle = -5;
 			break;
 		}
 	
@@ -420,17 +413,11 @@ void Settings(Player & players)
 			if (health_toggle < 2)
 			{
 				health_toggle++;
-				erase();
-				refresh();
-				noecho();
 				break;
 			}
 			if (health_toggle == 2)
 			{
 				health_toggle = -2;
-				erase();
-				refresh();
-				noecho();
 				break;
 			}
 
@@ -460,6 +447,9 @@ void Settings(Player & players)
 		case '4':
 			break;
 		}
+		//to have the screen refresh with the changes we need to do
+		//Settings(Player()); but if we just do that then settings doesn't exit (because settings is in settings)
+		//if the word settins is taken out it won't work. if player is taken out it won't run.
 	}
 }
 
@@ -488,7 +478,7 @@ void GameOver(string w)
 	}
 	else
 	{
-		cout << whitespace << "\t  Player " << w << " wins!" << endl;
+		cout << whitespace << "\t     " << w << " wins!" << endl;
 	}
 	cout << "\n" << endl;
 	cout << whitespace << "	     Play Again? Y/N \n\n" << endl;
