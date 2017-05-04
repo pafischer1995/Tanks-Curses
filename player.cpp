@@ -4,7 +4,6 @@
 #include "player.hpp"
 #include <locale.h>
 #include <clocale>
-#include <string>
 
 using namespace std;
 
@@ -26,7 +25,6 @@ Player::Player()
 	angle = 35.0;
 	power = 50.0;
 	win_check = false;
-	nickname = 'none';
 }
 
 
@@ -91,7 +89,6 @@ void Player::DrawSettings(int turn)
 
 	if (my_turn)
 		attron(A_STANDOUT);
-
 	ss << setw(10) << left << "Player: " << player;
 	mvaddstr(line++, starting_column, ss.str().c_str());
 	if (my_turn)
@@ -100,12 +97,12 @@ void Player::DrawSettings(int turn)
 	ss = stringstream();
 	ss << setw(10) << left << "Angle: " << setw(6) << angle;
 	mvaddstr(line++, starting_column, ss.str().c_str());
-	
+
 	ss = stringstream();
 	ss << setw(10) << left << "Power: " << setw(6) << power;
-	
+
 	mvaddstr(line++, starting_column, ss.str().c_str());
-	
+
 	ss = stringstream();
 	for (unsigned int i = 0; i < health; i++)
 	{
@@ -128,5 +125,5 @@ void Player::DrawSettings(int turn)
 		ss << "Out of Petrol.";
 		mvaddstr(line, starting_column, ss.str().c_str());
 	}
-	
+
 }

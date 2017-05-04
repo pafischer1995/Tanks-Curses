@@ -1,6 +1,5 @@
 #pragma once
 #include "ground.hpp"
-#include <sstream>
 
 extern int gas_toggle;
 extern int health_toggle;
@@ -22,8 +21,7 @@ public:
 	void PowerDown();
 	void AngleUp();
 	void AngleDown();
-	
-	int nickname;
+
 	bool win_check;
 	int gas = 5 + gas_toggle;
 	int health = 3 + health_toggle;
@@ -31,7 +29,7 @@ public:
 	int line;
 	double power;
 	double angle;
-	
+
 	Side s;
 
 	static const int power_increment;

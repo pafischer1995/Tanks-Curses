@@ -6,15 +6,6 @@
 
 // (up and down, left and right)
 //if you q twice in a row the second time it brings you to the main menu. check
-//ground has a bug where if the line isn't the same or +-1 it doesn't put anything, fix by implamenting a |
-//bullet landing/ ground destruction isn't 100% perfect, check the for loops, fix where bullet stops if it is diagonal from land.. otherwise bullet will stop one above the land and do no damage
-//		___
-//     /   \_
-// _/\_      \____
-//if there is a gap like this.. if it's up, do the | symbol on the line, if it's down do the | symbol a line down
-//make it so that a tank can't move past the | sign
-//sometimes the ground damage = 2.. this may be because the grounds are a vector<int> and the power/angle is a double. ask
-//look into moving the menu after everything is initialized, and then see if it's possible to reinitialize parts of the struct afterwards. this lets it all appear in the menu.
 
 #include <iostream>
 #include <sstream>
@@ -43,12 +34,8 @@ extern int lines;					//extern means there is a global variable somewhere, but i
 extern int cols;
 extern int base_height_divisor;
 extern int max_height_divisor;
-
-
 int gas_toggle = 0;
 int health_toggle = 0;
-string player_one_temp_name = "None";
-string player_two_temp_name = "None";
 
 const double PI = 3.141592653589793238463;
 
@@ -117,26 +104,25 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 			break;
 
 		//this breaks the ground
-		//fix this, otherwise the bomb stops diagonal of the land and doesn't break it
-		if (pNy + 1 == g.ground.at((int)pNx))
+		if (pNy == g.ground.at((int)pNx))
 		{
 			g.ground.at((int)pNx) = g.ground.at((int)pNx) + 1;
-		//g.ground.at((int)pNx + 1) = g.ground.at((int)pNx + 1) + 1;
-		//g.ground.at((int)pNx - 1) = g.ground.at((int)pNx - 1) - 1;
+			//g.ground.at((int)pNx + 1) = g.ground.at((int)pNx + 1) + 1;
+			//g.ground.at((int)pNx - 1) = g.ground.at((int)pNx - 1) - 1;
 		}
-		
-//this makes the bullet only one
-				erase();
-				DrawScreen(g, players, turn);
-				bullet_length = 0;
-				move((int)pNy - 1, (int)pNx + 1);
-				addch(ACS_BULLET);
-			
-			
-			refresh();
-			Sleep(50);
+
+		//this makes the bullet only one
+		erase();
+		DrawScreen(g, players, turn);
+		bullet_length = 0;
+		move((int)pNy - 1, (int)pNx + 1);
+		addch(ACS_BULLET);
+
+
+		refresh();
+		Sleep(50);
 	}
-						//pNx is left and right(cols), pNy is up and down(rows), 0,0 is top left
+	//pNx is left and right(cols), pNy is up and down(rows), 0,0 is top left
 	bih = pNx;
 	biv = pNy - 1;
 
@@ -158,7 +144,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 
 
 	//if bomb is within 1 column in either direction of player 1 or on the column
-	if (bih == players[0].col || bih == players[0].col +1 || bih == players[0].col - 1)
+	if (bih == players[0].col || bih == players[0].col + 1 || bih == players[0].col - 1)
 	{
 		if (biv == players[0].line || biv == players[0].line + 1 || biv == players[0].line - 1)
 		{
@@ -167,7 +153,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	}
 
 	//if bomb is within 1 column in either direction of player 2
-	if (bih == players[1].col || bih == players[1].col +1 || bih == players[1].col - 1)
+	if (bih == players[1].col || bih == players[1].col + 1 || bih == players[1].col - 1)
 	{
 		if (biv == players[1].line || biv == players[1].line + 1 || biv == players[1].line - 1)
 		{
@@ -199,35 +185,35 @@ int MainMenu()
 	int x = 0;
 
 	ss << "    _____      _____  ____ _______       _____  ___________ _______   ____ ___ ";
-	move(LINES /3,17);
+	move(LINES / 3, 17);
 	addstr(ss.str().c_str());
-	
+
 	ss = stringstream();
 	ss << "   /     \\    /  _  \\ |   |\\      \\     /     \\ \\_   _____/ \\      \\ |    |   \\ ";
 	move(LINES / 3 + 1, 17);
 	addstr(ss.str().c_str());
-	
+
 	ss = stringstream();
 	ss << "  /  \\ /  \\  /  /_\\  \\|   |/   |   \\   /  \\ /  \\ |    __)_  /   |   \\|    |   /";
 	move(LINES / 3 + 2, 17);
 	addstr(ss.str().c_str());
-	
+
 	ss = stringstream();
 	ss << " /    Y    \\/    |    \\   /    |    \\ /    Y    \\|        \\/    |    \\    |  / ";
 	move(LINES / 3 + 3, 17);
 	addstr(ss.str().c_str());
-	
+
 	ss = stringstream();
 
 	ss << " \\____|__  /\\____|__  /___\\____|__  / \\____|__  /_______  /\\____|__  /______/  ";
 	move(LINES / 3 + 4, 17);
 	addstr(ss.str().c_str());
-	
+
 	ss = stringstream();
 	ss << "         \\/         \\/            \\/          \\/        \\/         \\/          ";
 	move(LINES / 3 + 5, 17);
 	addstr(ss.str().c_str());
-	
+
 	ss = stringstream();
 	ss << "(P) Play \t\t (S) Settings \t\t (C) Credits \t\t (Q) Quit";
 	move(LINES / 3 + 11, 17);
@@ -282,7 +268,7 @@ void Credits()
 
 	// (up and down, left and right)
 	stringstream ss;
-	ss << "Game written and developed by Paul A. Fischer and Donald M. Jervis";
+	ss << "Game written and developed by Paul A. Fischer.";
 	move(LINES / 2 - 4, 38);
 	addstr(ss.str().c_str());
 
@@ -292,8 +278,8 @@ void Credits()
 	addstr(ss.str().c_str());
 
 	ss = stringstream();
-	ss << "pfischer@carthage.edu, djervis@carthage.edu";
-	move(LINES / 2, COLS /2 - 11);
+	ss << "pfischer@carthage.edu";
+	move(LINES / 2, COLS / 2 - 11);
 	addstr(ss.str().c_str());
 
 	ss = stringstream();
@@ -315,14 +301,14 @@ void Credits()
 		break;
 	}
 
-		initscr();
-		noecho();
-		keypad(stdscr, 1);
-		refresh();
+	initscr();
+	noecho();
+	keypad(stdscr, 1);
+	refresh();
 
 }
 
-void Settings(Player & players, string p1n, string p2n)
+void Settings(Player & players)
 {
 	erase();
 	noecho();
@@ -374,19 +360,15 @@ void Settings(Player & players, string p1n, string p2n)
 			addstr(ss.str().c_str());
 		}
 
-		//the left one controls how far up or down it is on the screen, the right one controls where it is left or right on the screen (u/d, l/r)
-		//player 1
 		ss = stringstream();
-		ss << setw(10) << left << "(1) Player 1 Nickname: " << p1n;
+		ss << setw(10) << left << "(1) Player 1 Nickname: ";
 		move(8, 9);
 		addstr(ss.str().c_str());
 
-		//player 2
 		ss = stringstream();
-		ss << setw(10) << right << "(2) Player 2 Nickname: " << p2n;
+		ss << setw(10) << right << "(2) Player 2 Nickname: ";
 		move(8, COLS / 2 + 9);
 		addstr(ss.str().c_str());
-		
 
 		ss = stringstream();
 		ss << setw(10) << left << "(3) Player 1 Color: ";
@@ -436,17 +418,17 @@ void Settings(Player & players, string p1n, string p2n)
 
 		case 'p':
 		case 'P':
-		if (gas_toggle < 10)
+			if (gas_toggle < 10)
 			{
 				gas_toggle++;
 				break;
 			}
-		else if (gas_toggle == 10)
-		{
-			gas_toggle = -5;
-			break;
-		}
-	
+			else if (gas_toggle == 10)
+			{
+				gas_toggle = -5;
+				break;
+			}
+
 			//health
 		case 'h':
 		case 'H':
@@ -473,14 +455,10 @@ void Settings(Player & players, string p1n, string p2n)
 
 			//p1 nickname
 		case '1':
-			p1n = "__________";
-			//getline(cin, p1n);
 			break;
 
 			//p2 nickname
 		case '2':
-			p2n = "__________";
-			//getline(cin, p1n);
 			break;
 
 			//p1 color
@@ -491,7 +469,7 @@ void Settings(Player & players, string p1n, string p2n)
 		case '4':
 			break;
 		}
-		
+
 	}
 }
 
@@ -531,11 +509,10 @@ void GameOver(string w)
 int main(int argc, char * argv[])
 {
 
-
 	//this loops from the game over menu back to start
 	while (true)
 	{
-		Player players[2];
+
 
 		bool quit = true;
 
@@ -576,7 +553,7 @@ int main(int argc, char * argv[])
 				noecho();
 				keypad(stdscr, 1);
 				refresh();
-				Settings(Player(), player_one_temp_name, player_two_temp_name);
+				Settings(Player());
 			}
 
 			//play
@@ -602,7 +579,7 @@ int main(int argc, char * argv[])
 			string w = "Draw";
 
 			Ground g;
-			//Player players[2];
+			Player players[2];
 
 			initscr();
 			noecho();
@@ -616,7 +593,7 @@ int main(int argc, char * argv[])
 
 			DrawScreen(g, players, turn);
 
-			
+
 
 			while (keep_going)
 			{
@@ -744,7 +721,7 @@ int main(int argc, char * argv[])
 					w = "Player 2";
 					keep_going = false;
 				}
-				
+
 
 			}
 
@@ -753,12 +730,12 @@ int main(int argc, char * argv[])
 			echo();
 			endwin();	//terminates your game, you can use cout after this.
 
-			//play game over screen (not ncurses)
+						//play game over screen (not ncurses)
 			GameOver(w);
 
 
 			char input = getchar();
-			
+
 
 			//if you hit Y it starts over
 			if ((input == 'y') || (input == 'Y'))
@@ -782,18 +759,17 @@ int main(int argc, char * argv[])
 	}
 }
 
-
+//work on ground contstruction- add the '|' symbol if they aren't on the same line (and don't allow up)
 //look into making the ground destruction move by 3, that way it could possibly smooth it down
 
 //extra credit Ideas
 
 //- wind
-//- change the color of a tank(s)
-//- player nicknames
+//- look to see if you can change the color of a tank(s)
+//- player names
 //- see if you can get a visual for shooting
 //-different terrains in the settings
 //- bombs and armour
-//fill ground below line
 
 
 /*
@@ -802,5 +778,4 @@ Possibly populate ground with these (depending on density maybe?)
 ASCII code 176 = ░ ( Graphic character, low density dotted )
 ASCII code 177 = ▒ ( Graphic character, medium density dotted )
 ASCII code 178 = ▓ ( Graphic character, high density dotted )
-
 */
