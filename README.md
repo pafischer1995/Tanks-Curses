@@ -6,7 +6,7 @@ In this game, you'll be able to command powerful tanks and wage war against your
 You'll have the ability to move and shoot at the enemy tank in an attempt to destroy it before it destroys you.
 You have the ability to decide things like your name, how much health each tank will have for the fight, and even the color of your war machine!
 
-#COMBAT
+**COMBAT**
 
 Each player will use the arrow keys to change the power and angle of their shot, trying to land their bullet right on the enemies tank.
 
