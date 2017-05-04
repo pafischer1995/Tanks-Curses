@@ -31,6 +31,8 @@ extern int lines;					//extern means there is a global variable somewhere, but i
 extern int cols;
 extern int base_height_divisor;
 extern int max_height_divisor;
+int gas_toggle = 0;
+int health_toggle = 0;
 
 const double PI = 3.141592653589793238463;
 
@@ -284,98 +286,181 @@ void Credits()
 
 }
 
-void Settings()
+void Settings(Player & players)
 {
 	erase();
-	refresh();
 	noecho();
-
-	stringstream ss;
-	ss << setw(10) << left << "Player 1";
-	move(2, 9);
-	addstr(ss.str().c_str());
-
-	ss = stringstream();
-	ss << setw(10) << right << "Player 2";
-	move(2, COLS - 18);
-	addstr(ss.str().c_str());
-
-	//vertical
-	for (int i = 0; i < LINES / 3 * 2 - 2; i++)
-	{
-		ss = stringstream();
-		ss << "|";
-		move(i, COLS / 2);
-		addstr(ss.str().c_str());
-	}
-
-	//horizontal upper
-	for (int i = 0; i < COLS; i++)
-	{
-		ss = stringstream();
-		ss << "-";
-		move(3, i);
-		addstr(ss.str().c_str());
-	}
-
-	//horizontal lower
-	for (int i = 0; i < COLS; i++)
-	{
-		ss = stringstream();
-		ss << "-";
-		move(LINES / 3 * 2 -2, i);
-		addstr(ss.str().c_str());
-	}
-
-	ss = stringstream();
-	ss << setw(10) << left << "Player 1 Nickname: ";
-	move(8,9);
-	addstr(ss.str().c_str());
-
-	ss = stringstream();
-	ss << setw(10) << right << "Player 2 Nickname: ";
-	move(8, COLS/2 + 9);
-	addstr(ss.str().c_str());
-
-	ss = stringstream();
-	ss << setw(10) << left << "Player 1 Color: ";
-	move(13, 9);
-	addstr(ss.str().c_str());
-
-	ss = stringstream();
-	ss << setw(10) << right << "Player 2 Color: ";
-	move(13, COLS / 2 + 9);
-	addstr(ss.str().c_str());
-
-	ss = stringstream();
-	ss << setw(10) << right << "Terrain Type: \t\t (H) High \t\t (M) Medium \t\t (L) Low ";
-	move(21, 9);
-	addstr(ss.str().c_str());
-
-	ss = stringstream();
-	ss << setw(10) << right << "Wind: \t\t\t (H) High \t\t (M) Medium \t\t (L) Low ";
-	move(25, 9);
-	addstr(ss.str().c_str());
-
-	ss = stringstream();
-	ss << "(B) Back";
-	move(LINES - 2, COLS - 10);
-	addstr(ss.str().c_str());
-
-	char c = getch();
-	switch (c)
-	{
-		//back
-	case 'b':
-	case 'B':
-		break;
-	}
-
-	initscr();
-	noecho();
-	keypad(stdscr, 1);
 	refresh();
 
+	bool keep_going = true;
+
+	while (keep_going == true)
+	{
+		
+		erase();
+		refresh();
+		noecho();
+
+
+		stringstream ss;
+		ss << setw(10) << left << "Player 1";
+		move(2, 9);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << setw(10) << right << "Player 2";
+		move(2, COLS - 18);
+		addstr(ss.str().c_str());
+
+		//vertical
+		for (int i = 0; i < LINES / 3 * 2 - 2; i++)
+		{
+			ss = stringstream();
+			ss << "|";
+			move(i, COLS / 2);
+			addstr(ss.str().c_str());
+		}
+
+		//horizontal upper
+		for (int i = 0; i < COLS; i++)
+		{
+			ss = stringstream();
+			ss << "-";
+			move(3, i);
+			addstr(ss.str().c_str());
+		}
+
+		//horizontal lower
+		for (int i = 0; i < COLS; i++)
+		{
+			ss = stringstream();
+			ss << "-";
+			move(LINES / 3 * 2 - 2, i);
+			addstr(ss.str().c_str());
+		}
+
+		ss = stringstream();
+		ss << setw(10) << left << "(1) Player 1 Nickname: ";
+		move(8, 9);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << setw(10) << right << "(2) Player 2 Nickname: ";
+		move(8, COLS / 2 + 9);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << setw(10) << left << "(3) Player 1 Color: ";
+		move(13, 9);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << setw(10) << right << "(4) Player 2 Color: ";
+		move(13, COLS / 2 + 9);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << setw(10) << right << "(T) Toggle Terrain Type: \t\t High \t\t Medium \t   Low ";
+		move(21, 9);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << setw(10) << right << "(W) Toggle Wind: \t\t\t High \t\t Medium \t   Low ";
+		move(23, 9);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << setw(10) << right << "(H) Starting Health \t<" << players.health << ">";
+		move(25, 9);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << setw(10) << right << "(P) Starting Petrol \t<" << players.gas << ">";
+		move(27, 9);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "(B) Back";
+		move(LINES - 2, COLS - 10);
+		addstr(ss.str().c_str());
+
+		char c = getch();
+		switch (c)
+		{
+			//back
+		case 'b':
+		case 'B':
+			keep_going = false;
+			break;
+
+			//change starting petrol up to 10
+			//it changes but doesn't show up until you exit and re enter settings
+		case 'p':
+		case 'P':
+		if (gas_toggle < 5)
+			{
+				gas_toggle++;
+				erase();
+				refresh();
+				noecho();
+				break;
+			}
+		if (gas_toggle == 5)
+		{
+			gas_toggle = -4;
+			erase();
+			refresh();
+			noecho();
+			break;
+		}
+	
+			//health
+		case 'h':
+		case 'H':
+			if (health_toggle < 2)
+			{
+				health_toggle++;
+				erase();
+				refresh();
+				noecho();
+				break;
+			}
+			if (health_toggle == 2)
+			{
+				health_toggle = -2;
+				erase();
+				refresh();
+				noecho();
+				break;
+			}
+
+			//wind toggle
+		case 'w':
+		case 'W':
+			break;
+
+			//terrain toggle
+		case 't':
+		case 'T':
+			break;
+
+			//p1 nickname
+		case '1':
+			break;
+
+			//p2 nickname
+		case '2':
+			break;
+
+			//p1 color
+		case '3':
+			break;
+
+			//p2 color
+		case '4':
+			break;
+		}
+	}
 }
 
 void GameOver(string w)
@@ -414,11 +499,14 @@ void GameOver(string w)
 int main(int argc, char * argv[])
 {
 
-
+	//this loops from the game over menu back to start
 	while (true)
 	{
+
+
 		bool quit = true;
 
+		//this loops back to the starting menu
 		while (true)
 		{
 			erase();
@@ -455,19 +543,12 @@ int main(int argc, char * argv[])
 				noecho();
 				keypad(stdscr, 1);
 				refresh();
-				Settings();
+				Settings(Player());
 			}
 
 			//play
 			else if (x == 1)
 			{
-				//gets rid of flash when P is pressed
-				erase();
-				refresh();
-				initscr();
-				noecho();
-				keypad(stdscr, 1);
-				refresh();
 				break;
 			}
 		}

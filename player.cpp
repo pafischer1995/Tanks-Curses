@@ -12,6 +12,7 @@ extern int cols;
 extern int base_height_divisor;
 extern int max_height_divisor;
 
+
 const int Player::power_increment = 1;
 const double Player::angle_increment = 1;
 
@@ -23,8 +24,6 @@ Player::Player()
 	line = 0;
 	angle = 35.0;
 	power = 50.0;
-	health = 3;
-	gas = 5;
 	win_check = false;
 }
 
@@ -123,7 +122,7 @@ void Player::DrawSettings(int turn)
 	}
 	else
 	{
-		ss << "Out of Gas.";
+		ss << "Out of Petrol.";
 		mvaddstr(line, starting_column, ss.str().c_str());
 	}
 	

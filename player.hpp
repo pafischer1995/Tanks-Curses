@@ -1,6 +1,9 @@
 #pragma once
 #include "ground.hpp"
 
+extern int gas_toggle;
+extern int health_toggle;
+
 enum Side
 {
 	LEFT,
@@ -20,8 +23,8 @@ public:
 	void AngleDown();
 	
 	bool win_check;
-	int gas;
-	int health;
+	int gas = 5 + gas_toggle;
+	int health = 3 + health_toggle;
 	int col;
 	int line;
 	double power;
