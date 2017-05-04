@@ -6,6 +6,15 @@
 
 // (up and down, left and right)
 //if you q twice in a row the second time it brings you to the main menu. check
+//ground has a bug where if the line isn't the same or +-1 it doesn't put anything, fix by implamenting a |
+//bullet landing/ ground destruction isn't 100% perfect, check the for loops, fix where bullet stops if it is diagonal from land.. otherwise bullet will stop one above the land and do no damage
+//		___
+//     /   \_
+// _/\_      \____
+//if there is a gap like this.. if it's up, do the | symbol on the line, if it's down do the | symbol a line down
+//make it so that a tank can't move past the | sign
+//sometimes the ground damage = 2.. this may be because the grounds are a vector<int> and the power/angle is a double. ask
+//look into moving the menu after everything is initialized, and then see if it's possible to reinitialize parts of the struct afterwards. this lets it all appear in the menu.
 
 #include <iostream>
 #include <sstream>
@@ -34,8 +43,12 @@ extern int lines;					//extern means there is a global variable somewhere, but i
 extern int cols;
 extern int base_height_divisor;
 extern int max_height_divisor;
+
+
 int gas_toggle = 0;
 int health_toggle = 0;
+string player_one_temp_name = "None";
+string player_two_temp_name = "None";
 
 const double PI = 3.141592653589793238463;
 
@@ -104,7 +117,8 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 			break;
 
 		//this breaks the ground
-		if (pNy == g.ground.at((int)pNx))
+		//fix this, otherwise the bomb stops diagonal of the land and doesn't break it
+		if (pNy + 1 == g.ground.at((int)pNx))
 		{
 			g.ground.at((int)pNx) = g.ground.at((int)pNx) + 1;
 		//g.ground.at((int)pNx + 1) = g.ground.at((int)pNx + 1) + 1;
@@ -308,7 +322,7 @@ void Credits()
 
 }
 
-void Settings(Player & players)
+void Settings(Player & players, string p1n, string p2n)
 {
 	erase();
 	noecho();
@@ -360,15 +374,19 @@ void Settings(Player & players)
 			addstr(ss.str().c_str());
 		}
 
+		//the left one controls how far up or down it is on the screen, the right one controls where it is left or right on the screen (u/d, l/r)
+		//player 1
 		ss = stringstream();
-		ss << setw(10) << left << "(1) Player 1 Nickname: ";
+		ss << setw(10) << left << "(1) Player 1 Nickname: " << p1n;
 		move(8, 9);
 		addstr(ss.str().c_str());
 
+		//player 2
 		ss = stringstream();
-		ss << setw(10) << right << "(2) Player 2 Nickname: ";
+		ss << setw(10) << right << "(2) Player 2 Nickname: " << p2n;
 		move(8, COLS / 2 + 9);
 		addstr(ss.str().c_str());
+		
 
 		ss = stringstream();
 		ss << setw(10) << left << "(3) Player 1 Color: ";
@@ -455,10 +473,14 @@ void Settings(Player & players)
 
 			//p1 nickname
 		case '1':
+			p1n = "__________";
+			//getline(cin, p1n);
 			break;
 
 			//p2 nickname
 		case '2':
+			p2n = "__________";
+			//getline(cin, p1n);
 			break;
 
 			//p1 color
@@ -509,10 +531,11 @@ void GameOver(string w)
 int main(int argc, char * argv[])
 {
 
+
 	//this loops from the game over menu back to start
 	while (true)
 	{
-
+		Player players[2];
 
 		bool quit = true;
 
@@ -553,7 +576,7 @@ int main(int argc, char * argv[])
 				noecho();
 				keypad(stdscr, 1);
 				refresh();
-				Settings(Player());
+				Settings(Player(), player_one_temp_name, player_two_temp_name);
 			}
 
 			//play
@@ -579,7 +602,7 @@ int main(int argc, char * argv[])
 			string w = "Draw";
 
 			Ground g;
-			Player players[2];
+			//Player players[2];
 
 			initscr();
 			noecho();
@@ -759,17 +782,18 @@ int main(int argc, char * argv[])
 	}
 }
 
-//work on ground contstruction- add the '|' symbol if they aren't on the same line (and don't allow up)
+
 //look into making the ground destruction move by 3, that way it could possibly smooth it down
 
 //extra credit Ideas
 
 //- wind
-//- look to see if you can change the color of a tank(s)
-//- player names
+//- change the color of a tank(s)
+//- player nicknames
 //- see if you can get a visual for shooting
 //-different terrains in the settings
 //- bombs and armour
+//fill ground below line
 
 
 /*
@@ -778,4 +802,5 @@ Possibly populate ground with these (depending on density maybe?)
 ASCII code 176 = ░ ( Graphic character, low density dotted )
 ASCII code 177 = ▒ ( Graphic character, medium density dotted )
 ASCII code 178 = ▓ ( Graphic character, high density dotted )
+
 */

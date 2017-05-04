@@ -1,6 +1,7 @@
 #include "curses.h"
 #include "ground.hpp"
 
+
 //this is where lines, cols, base_height_divisor, and max_heigh_divisor are created
 int lines = 40;
 int cols = 120;
