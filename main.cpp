@@ -4,6 +4,9 @@
 //Tanks
 
 
+// (up and down, left and right)
+//if you q twice in a row the second time it brings you to the main menu. check
+
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -100,29 +103,26 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 		if (pNy > g.ground.at((int)pNx))
 			break;
 
+		//this breaks the ground
+		if (pNy == g.ground.at((int)pNx))
+		{
+			g.ground.at((int)pNx) = g.ground.at((int)pNx) + 1;
+		//g.ground.at((int)pNx + 1) = g.ground.at((int)pNx + 1) + 1;
+		//g.ground.at((int)pNx - 1) = g.ground.at((int)pNx - 1) - 1;
+		}
 		
-
-		//these 2 lines make it only 1 long
-		//try to create tail that is 5 long at all times (not yet)
-			if (bullet_length < 3)
-			{
-				bullet_length++;
-				move((int)pNy - 1, (int)pNx + 1);
-				addch(ACS_BULLET);
-			}
-			else
-			{
+//this makes the bullet only one
 				erase();
 				DrawScreen(g, players, turn);
 				bullet_length = 0;
 				move((int)pNy - 1, (int)pNx + 1);
 				addch(ACS_BULLET);
-			}
+			
 			
 			refresh();
 			Sleep(50);
 	}
-						//pNx is left and right, pNy is up and down, 0,0 is top left
+						//pNx is left and right(cols), pNy is up and down(rows), 0,0 is top left
 	bih = pNx;
 	biv = pNy - 1;
 
@@ -140,6 +140,8 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	refresh();
 
 	Sleep(1200);
+
+
 
 	//if bomb is within 1 column in either direction of player 1 or on the column
 	if (bih == players[0].col || bih == players[0].col +1 || bih == players[0].col - 1)
@@ -159,6 +161,10 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 		}
 	}
 
+
+
+
+	//win check
 	if (players[0].health == 0)
 	{
 		players[1].win_check = true;
@@ -260,9 +266,25 @@ void Credits()
 	refresh();
 	noecho();
 
+	// (up and down, left and right)
 	stringstream ss;
-	ss << "Game written and developed by Paul Fischer.";
-	move(LINES / 2, 38);
+	ss << "Game written and developed by Paul A. Fischer.";
+	move(LINES / 2 - 4, 38);
+	addstr(ss.str().c_str());
+
+	ss = stringstream();
+	ss << "paulfischerproductions@gmail.com";
+	move(LINES / 2 - 1, COLS / 2 - 16);
+	addstr(ss.str().c_str());
+
+	ss = stringstream();
+	ss << "pfischer@carthage.edu";
+	move(LINES / 2, COLS /2 - 11);
+	addstr(ss.str().c_str());
+
+	ss = stringstream();
+	ss << "Professor Perry Kivolowitz, Computer Science II";
+	move(LINES / 2 + 3, 37);
 	addstr(ss.str().c_str());
 
 	ss = stringstream();
@@ -447,9 +469,7 @@ void Settings(Player & players)
 		case '4':
 			break;
 		}
-		//to have the screen refresh with the changes we need to do
-		//Settings(Player()); but if we just do that then settings doesn't exit (because settings is in settings)
-		//if the word settins is taken out it won't work. if player is taken out it won't run.
+		
 	}
 }
 
@@ -580,6 +600,7 @@ int main(int argc, char * argv[])
 
 				int x = turn;
 				int winner_check = 0;
+
 
 				//keep bullet in loop so that it doesn't hurt player 2 rounds in a row
 				int  bullet_impact_horizontal = 0;
@@ -713,8 +734,8 @@ int main(int argc, char * argv[])
 			GameOver(w);
 
 
-			char input;
-			std::cin >> input;
+			char input = getchar();
+			
 
 			//if you hit Y it starts over
 			if ((input == 'y') || (input == 'Y'))
@@ -738,19 +759,18 @@ int main(int argc, char * argv[])
 	}
 }
 
-//left to be implemented: ground destruction
+//work on ground contstruction- add the '|' symbol if they aren't on the same line (and don't allow up)
+//look into making the ground destruction move by 3, that way it could possibly smooth it down
 
 //extra credit Ideas
 
 //- wind
-//- ground desctruction
 //- look to see if you can change the color of a tank(s)
 //- player names
 //- see if you can get a visual for shooting
 //-different terrains in the settings
 //- bombs and armour
 
-//choose how much health and gas you have (up to 5 and 10)
 
 /*
 //fill ground with ASCII Table below, or ACS_CKBOARD
@@ -758,6 +778,4 @@ Possibly populate ground with these (depending on density maybe?)
 ASCII code 176 = ░ ( Graphic character, low density dotted )
 ASCII code 177 = ▒ ( Graphic character, medium density dotted )
 ASCII code 178 = ▓ ( Graphic character, high density dotted )
-
-drawscreen seems to be where to modify ground
 */
