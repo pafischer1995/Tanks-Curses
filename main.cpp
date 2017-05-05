@@ -5,7 +5,7 @@
 
 
 // (up and down, left and right)
-//if you q twice in a row the second time it brings you to the main menu. check
+//if the ground doesn't have an icon make it so you can't move past it
 
 #include <iostream>
 #include <sstream>
@@ -331,6 +331,8 @@ void Settings(Player & players)
 		refresh();
 		noecho();
 
+		char square = ' ';
+
 		stringstream ss;
 		ss << setw(10) << left << "Player 1";
 		move(2, 9);
@@ -378,15 +380,146 @@ void Settings(Player & players)
 		move(8, COLS / 2 + 9);
 		addstr(ss.str().c_str());
 
+	
 		ss = stringstream();
 		ss << setw(10) << left << "(3) Player 1 Color: ";
 		move(13, 9);
 		addstr(ss.str().c_str());
 
+
+		start_color();
+		init_pair(1, COLOR_BLACK, COLOR_RED);
+		init_pair(2, COLOR_BLACK, COLOR_GREEN);
+		init_pair(3, COLOR_BLACK, COLOR_YELLOW);
+		init_pair(4, COLOR_BLACK, COLOR_BLUE);
+		init_pair(5, COLOR_BLACK, COLOR_MAGENTA);
+		init_pair(6, COLOR_BLACK, COLOR_CYAN);
+		init_pair(7, COLOR_BLACK, COLOR_WHITE);
+
+		attron(COLOR_PAIR(1));
+		ss = stringstream();
+		ss << setw(2) << right << square;
+		move(15, 9);
+		addstr(ss.str().c_str());
+
+
+		attron(COLOR_PAIR(2));
+		ss = stringstream();
+		ss << setw(2) << right << square;
+		move(15, 13);
+		addstr(ss.str().c_str());
+
+
+		attron(COLOR_PAIR(3));
+		ss = stringstream();
+		ss << setw(2) << right << square;
+		move(15, 17);
+		addstr(ss.str().c_str());
+
+
+		attron(COLOR_PAIR(4));
+		ss = stringstream();
+		ss << setw(2) << right << square;
+		move(15, 21);
+		addstr(ss.str().c_str());
+
+
+		attron(COLOR_PAIR(5));
+		ss = stringstream();
+		ss << setw(2) << right << square;
+		move(15, 25);
+		addstr(ss.str().c_str());
+
+
+		attron(COLOR_PAIR(6));
+		ss = stringstream();
+		ss << setw(2) << right << square;
+		move(15, 29);
+		addstr(ss.str().c_str());
+
+
+		attron(COLOR_PAIR(7));
+		ss = stringstream();
+		ss << setw(2) << right << square;
+		move(15, 33);
+		addstr(ss.str().c_str());
+
+		attroff(COLOR_PAIR(1));
+		attroff(COLOR_PAIR(2));
+		attroff(COLOR_PAIR(3));
+		attroff(COLOR_PAIR(4));
+		attroff(COLOR_PAIR(5));
+		attroff(COLOR_PAIR(6));
+		attroff(COLOR_PAIR(7));
+
 		ss = stringstream();
 		ss << setw(10) << right << "(4) Player 2 Color: ";
 		move(13, COLS / 2 + 9);
 		addstr(ss.str().c_str());
+
+		init_pair(1, COLOR_BLACK, COLOR_RED);
+		init_pair(2, COLOR_BLACK, COLOR_GREEN);
+		init_pair(3, COLOR_BLACK, COLOR_YELLOW);
+		init_pair(4, COLOR_BLACK, COLOR_BLUE);
+		init_pair(5, COLOR_BLACK, COLOR_MAGENTA);
+		init_pair(6, COLOR_BLACK, COLOR_CYAN);
+		init_pair(7, COLOR_BLACK, COLOR_WHITE);
+
+		attron(COLOR_PAIR(1));
+		ss = stringstream();
+		ss << setw(2) << right << square;
+		move(15, COLS / 2 + 9);
+		addstr(ss.str().c_str());
+
+
+		attron(COLOR_PAIR(2));
+		ss = stringstream();
+		ss << setw(2) << right << square;
+		move(15, COLS / 2 + 13);
+		addstr(ss.str().c_str());
+
+
+		attron(COLOR_PAIR(3));
+		ss = stringstream();
+		ss << setw(2) << right << square;
+		move(15, COLS / 2 + 17);
+		addstr(ss.str().c_str());
+
+
+		attron(COLOR_PAIR(4));
+		ss = stringstream();
+		ss << setw(2) << right << square;
+		move(15, COLS / 2 + 21);
+		addstr(ss.str().c_str());
+
+
+		attron(COLOR_PAIR(5));
+		ss = stringstream();
+		ss << setw(2) << right << square;
+		move(15, COLS / 2 + 25);
+		addstr(ss.str().c_str());
+
+
+		attron(COLOR_PAIR(6));
+		ss = stringstream();
+		ss << setw(2) << right << square;
+		move(15, COLS / 2 + 29);
+		addstr(ss.str().c_str());
+
+
+		attron(COLOR_PAIR(7));
+		ss = stringstream();
+		ss << setw(2) << right << square;
+		move(15, COLS / 2 + 33);
+		addstr(ss.str().c_str());
+
+		attroff(COLOR_PAIR(1));
+		attroff(COLOR_PAIR(2));
+		attroff(COLOR_PAIR(3));
+		attroff(COLOR_PAIR(4));
+		attroff(COLOR_PAIR(5));
+		attroff(COLOR_PAIR(6));
+		attroff(COLOR_PAIR(7));
 
 		ss = stringstream();
 		ss << setw(10) << right << "(T) Toggle Terrain Type: \t\t High \t\t Medium \t   Low ";
