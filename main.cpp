@@ -60,6 +60,9 @@ void DrawScreen(Ground & g, Player * players, int turn)
 //this function shoots bullet
 //projects the path of the bullet as ACS_BULLET(before was *)
 //it wants to know where the ground is, where the player is, and whos turn it is
+//if bullet goes far to the right it stops doing ground damage at a certain col
+
+
 void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 {
 
@@ -521,9 +524,12 @@ int main(int argc, char * argv[])
 
 		bool quit = true;
 
+
 		//this loops back to the starting menu
 		while (true)
 		{
+			quit = true;
+
 			erase();
 			initscr();
 			noecho();
@@ -573,16 +579,16 @@ int main(int argc, char * argv[])
 			break;
 		}
 
+		bool keep_going = true;
 		//this while loop starts the game over
 		while (true)
 		{
-
+			keep_going = true;
 			srand((unsigned int)time(nullptr));
 
 			int turn = 0;
-			bool keep_going = true;
+		
 			string w = "Draw";
-
 			Ground g;
 			Player players[2];
 
@@ -599,7 +605,7 @@ int main(int argc, char * argv[])
 			DrawScreen(g, players, turn);
 
 
-
+			//this loop is a players turn
 			while (keep_going)
 			{
 
@@ -656,6 +662,7 @@ int main(int argc, char * argv[])
 				case 10:
 				case KEY_ENTER:
 				case PADENTER:
+				case ' ':
 					Shoot(g, players, turn, bullet_impact_horizontal, bullet_impact_vertical);
 					//this makes it so each player regenerates one gas a turn unless at max tank size
 					if (players[turn].gas < 5)
@@ -739,7 +746,8 @@ int main(int argc, char * argv[])
 			GameOver(w);
 
 
-			char input = getchar();
+			char input;
+			cin >> input;
 
 
 			//if you hit Y it starts over
@@ -747,14 +755,17 @@ int main(int argc, char * argv[])
 			{
 				continue;
 			}
-			//if you hit anything else it goes back to menu page
-			else
+
+			
+			if ((input == 'n' || input == 'N'))
 			{
 				break;
 			}
 
-
-
+			else
+			{
+				continue;
+			}
 
 #if defined(WIN32)
 			system("pause");
@@ -763,9 +774,6 @@ int main(int argc, char * argv[])
 		}
 	}
 }
-
-//work on ground contstruction- add the '|' symbol if they aren't on the same line (and don't allow up)
-//look into making the ground destruction move by 3, that way it could possibly smooth it down
 
 //extra credit Ideas
 
