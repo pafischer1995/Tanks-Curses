@@ -70,7 +70,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	//horizontal
 	double x_component = cos(angle) * players[turn].power * 0.2;
 
-	double pNx;		//position new x and new y?
+	double pNx;		
 	double pNy;
 
 	//flips the bullet if it's the player on the other side of the screen
@@ -83,7 +83,6 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 
 	p0y = lines - p0y;
 
-	int bullet_length = 0;
 
 	for (int i = 1; i < 5000; i++)
 	{
@@ -92,29 +91,31 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 		pNx = (int)(p0x + di * x_component);
 		pNy = p0y + di * y_component + (di * di + di) * -0.98 / 2.0;
 		pNy = (int)(lines - pNy);
+		//if it goes too far left or too far right this ends the turn
 		if (pNx < 1 || pNx >= cols - 2)
 			break;
+		//if this goes off the screen upwards it just sleeps until the bomb comes back in
 		if (pNy < 1) {
 			Sleep(50);
 			continue;
 		}
-		//	if (pNy >= lines - 2)
-		//		break;
-		if (pNy > g.ground.at((int)pNx))
-			break;
 
-		//this breaks the ground
-		if (pNy == g.ground.at((int)pNx))
-		{
-			g.ground.at((int)pNx) = g.ground.at((int)pNx) + 1;
-			//g.ground.at((int)pNx + 1) = g.ground.at((int)pNx + 1) + 1;
-			//g.ground.at((int)pNx - 1) = g.ground.at((int)pNx - 1) - 1;
-		}
+		//if bullet goes off the screen at the bottom
+			if (pNy >= lines - 2)
+			break;
+		
+		//if the bullet is in the ground then break
+			if (pNy >= g.ground.at((int)pNx))
+			{
+				g.ground.at((int)pNx)++;
+				g.ground.at((int)pNx - 1)++;
+				g.ground.at((int)pNx + 1)++;
+				break;
+			}
 
 		//this makes the bullet only one
 		erase();
 		DrawScreen(g, players, turn);
-		bullet_length = 0;
 		move((int)pNy - 1, (int)pNx + 1);
 		addch(ACS_BULLET);
 
@@ -122,8 +123,8 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 		refresh();
 		Sleep(50);
 	}
-	//pNx is left and right(cols), pNy is up and down(rows), 0,0 is top left
-	bih = pNx;
+	
+	bih = pNx + 1;
 	biv = pNy - 1;
 
 	stringstream ss;
@@ -139,9 +140,15 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	addstr(ss.str().c_str());
 	refresh();
 
+	ss = stringstream();
+	ss << "#";
+	move(biv,bih);
+	addstr(ss.str().c_str());
+	refresh();
+
 	Sleep(1200);
 
-
+	
 
 	//if bomb is within 1 column in either direction of player 1 or on the column
 	if (bih == players[0].col || bih == players[0].col + 1 || bih == players[0].col - 1)
@@ -160,8 +167,6 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 			players[1].health--;
 		}
 	}
-
-
 
 
 	//win check

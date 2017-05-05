@@ -33,10 +33,26 @@ void Ground::InitializeGround()
 
 void Ground::Draw()
 {
+	
 	//goes from left to right. + rows and cols
-	mvaddch(ground.at(0), 1, '_');
+	mvaddch(ground.at(0), 1, '-');
+	if (ground.at(0) > ground.at(1))
+	{
+		mvaddch(ground.at(0), 1, '\\');
+	}
+
+	else if (ground.at(0) < ground.at(1))
+	{
+		mvaddch(ground.at(0), 1, '/');
+	}
+
+	else
+		mvaddch(ground.at(0), 1, '_');
+
+
 	for (size_t i = 1; i < ground.size(); i++)
 	{
+		
 		if (ground.at(i) > ground.at(i - 1))
 		{
 			mvaddch(ground.at(i), i + 1, '\\');
@@ -49,6 +65,7 @@ void Ground::Draw()
 
 		else
 			mvaddch(ground.at(i), i + 1, '_');
+		//ACS_CKBOARD
 
 		//make one for straight up '|'
 		//to do this you have to make sure that they are on the same "line"
