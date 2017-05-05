@@ -36,6 +36,8 @@ extern int base_height_divisor;
 extern int max_height_divisor;
 int gas_toggle = 0;
 int health_toggle = 0;
+int color_toggle_one = 0;
+int color_toggle_two = 0;
 
 const double PI = 3.141592653589793238463;
 
@@ -380,12 +382,20 @@ void Settings(Player & players)
 		move(8, COLS / 2 + 9);
 		addstr(ss.str().c_str());
 
-	
+
 		ss = stringstream();
-		ss << setw(10) << left << "(3) Player 1 Color: ";
+		ss << setw(10) << left << "(3) Player 1 Color";
 		move(13, 9);
 		addstr(ss.str().c_str());
-
+		
+		if (color_toggle_one > 0)
+		{
+			ss = stringstream();
+			ss << "^";
+			move(17, 9 + (4 * color_toggle_one) - 4);
+			addstr(ss.str().c_str());
+		}
+		
 
 		start_color();
 		init_pair(1, COLOR_BLACK, COLOR_RED);
@@ -453,9 +463,18 @@ void Settings(Player & players)
 		attroff(COLOR_PAIR(7));
 
 		ss = stringstream();
-		ss << setw(10) << right << "(4) Player 2 Color: ";
+		ss << setw(10) << right << "(4) Player 2 Color";
 		move(13, COLS / 2 + 9);
 		addstr(ss.str().c_str());
+
+		if (color_toggle_two > 0)
+		{
+			ss = stringstream();
+			ss << "^";
+			move(17, (COLS / 2) + 9 + (4 * color_toggle_two) - 4);
+			addstr(ss.str().c_str());
+		}
+
 
 		init_pair(1, COLOR_BLACK, COLOR_RED);
 		init_pair(2, COLOR_BLACK, COLOR_GREEN);
@@ -604,13 +623,35 @@ void Settings(Player & players)
 
 			//p1 color
 		case '3':
-			break;
-
-			//p2 color
-		case '4':
-			break;
+		{
+			if (color_toggle_one < 7)
+			{
+				color_toggle_one++;
+				break;
+			}
+			else if (color_toggle_one == 7)
+			{
+				color_toggle_one = 1;
+				break;
+			}
 		}
 
+		//p2 color
+		case '4':
+		{
+			if (color_toggle_two < 7)
+			{
+				color_toggle_two++;
+				break;
+			}
+			else if (color_toggle_two == 7)
+			{
+				color_toggle_two = 1;
+				break;
+			}
+		}
+
+		}
 	}
 }
 
@@ -906,22 +947,22 @@ int main(int argc, char * argv[])
 			return 0;
 		}
 	}
+	//extra credit Ideas
+
+	//- wind
+	//- look to see if you can change the color of a tank(s)
+	//- player names
+	//- see if you can get a visual for shooting
+	//-different terrains in the settings
+	//- bombs and armour
+
+
+	/*
+	//fill ground with ASCII Table below, or ACS_CKBOARD
+	Possibly populate ground with these (depending on density maybe?)
+	ASCII code 176 = ░ ( Graphic character, low density dotted )
+	ASCII code 177 = ▒ ( Graphic character, medium density dotted )
+	ASCII code 178 = ▓ ( Graphic character, high density dotted )
+	*/
 }
 
-//extra credit Ideas
-
-//- wind
-//- look to see if you can change the color of a tank(s)
-//- player names
-//- see if you can get a visual for shooting
-//-different terrains in the settings
-//- bombs and armour
-
-
-/*
-//fill ground with ASCII Table below, or ACS_CKBOARD
-Possibly populate ground with these (depending on density maybe?)
-ASCII code 176 = ░ ( Graphic character, low density dotted )
-ASCII code 177 = ▒ ( Graphic character, medium density dotted )
-ASCII code 178 = ▓ ( Graphic character, high density dotted )
-*/
