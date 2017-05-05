@@ -5,7 +5,6 @@
 
 
 // (up and down, left and right)
-//if the ground doesn't have an icon make it so you can't move past it
 
 #include <iostream>
 #include <sstream>
@@ -773,9 +772,14 @@ int main(int argc, char * argv[])
 			curs_set(0);
 
 			g.InitializeGround();
+			//players.initialize spawns the tanks location
 			players[0].Initialize(rand() % (cols / 4), LEFT);
 			players[1].Initialize(rand() % (cols / 4) + 3 * cols / 4 - 2, RIGHT);
 
+
+			//drawscreen does draw(g) and draw(players) as well as drawsettings(players)
+			//draw creates the tank
+			//drawsettings creates the words, gas, and health
 			DrawScreen(g, players, turn);
 
 
@@ -947,14 +951,18 @@ int main(int argc, char * argv[])
 			return 0;
 		}
 	}
+
+	//if the ground doesn't have an icon make it so you can't move past it
+	//(this is only a problem if the ground is smoothed. if changed back to 8-bit it renders fine.
+
 	//extra credit Ideas
 
 	//- wind
-	//- look to see if you can change the color of a tank(s)
 	//- player names
-	//- see if you can get a visual for shooting
 	//-different terrains in the settings
-	//- bombs and armour
+	//- score bombs and armour
+
+	//- see if you can get a visual for shooting -- don't think this is possible in a terminal
 
 
 	/*

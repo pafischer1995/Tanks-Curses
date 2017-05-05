@@ -37,7 +37,20 @@ void Player::Initialize(int column, Side side)
 //not moving
 void Player::Draw(Ground & g)
 {
+	start_color();
+	init_pair(1, COLOR_RED, COLOR_BLACK);
+	init_pair(2, COLOR_GREEN, COLOR_BLACK);
+	init_pair(3, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(4, COLOR_BLUE, COLOR_BLACK);
+	init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
+	init_pair(6, COLOR_CYAN, COLOR_BLACK);
+	init_pair(7, COLOR_WHITE, COLOR_BLACK);
+
+	attron(COLOR_PAIR(color));
+
 	mvaddch(g.ground.at(col) - 1, col + 1, ACS_DIAMOND);
+
+	attroff(COLOR_PAIR(color));
 
 	//in case there is ever a situation where land is floating above, or they hit the land below, they don't die for being in same column
 	line = g.ground.at(col) - 1;
