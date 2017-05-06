@@ -165,7 +165,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	{
 		if (biv == players[0].line || biv == players[0].line + 1 || biv == players[0].line - 1)
 		{
-			p1s + 25;
+			players[1].points = players[0].points + 25;
 			players[0].health--;
 		}
 	}
@@ -175,7 +175,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	{
 		if (biv == players[1].line || biv == players[1].line + 1 || biv == players[1].line - 1)
 		{
-			p2s + 25;
+			players[0].points = players[1].points + 25;
 			players[1].health--;
 		}
 	}
@@ -184,13 +184,11 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	//win check
 	if (players[0].health == 0)
 	{
-		p2s + 50;
 		players[1].win_check = true;
 	}
 
 	if (players[1].health == 0)
 	{
-		p1s + 50;
 		players[0].win_check = true;
 	}
 }
@@ -977,14 +975,18 @@ int main(int argc, char * argv[])
 				{
 					w = "Player 1";
 					keep_going = false;
+					players[0].points = players[0].points + 50;
 				}
 
 				if (players[1].win_check == true)
 				{
 					w = "Player 2";
 					keep_going = false;
+					players[1].points = players[1].points + 50;
 				}
 
+				p1s = players[0].points;
+				p2s = players[1].points;
 
 			}
 
