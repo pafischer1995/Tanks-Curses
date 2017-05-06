@@ -729,7 +729,7 @@ void GameOver(string w)
 	}
 	else
 	{
-		cout << whitespace << "\t     " << w << " wins!" << endl;
+		cout << setw(53) << " " << w << " wins!" << endl;
 	}
 	cout << "\n" << endl;
 	cout << whitespace << "	     Play Again? Y/N \n\n" << endl;
@@ -973,14 +973,30 @@ int main(int argc, char * argv[])
 
 				if (players[0].win_check == true)
 				{
-					w = "Player 1";
+					if (nickname_check_one == true)
+					{
+						w = players[0].nickname;
+					}
+					else
+					{
+						w = "Player 1";
+					}
+
 					keep_going = false;
 					players[0].points = players[0].points + 50;
 				}
 
 				if (players[1].win_check == true)
 				{
-					w = "Player 2";
+					if (nickname_check_two == true)
+					{
+						w = players[1].nickname;
+					}
+					else
+					{
+						w = "Player 2";
+					}
+
 					keep_going = false;
 					players[1].points = players[1].points + 50;
 				}
@@ -1053,8 +1069,12 @@ int main(int argc, char * argv[])
 
 	//if the ground doesn't have an icon make it so you can't move past it
 	//- wind
-	//-different terrains in the settings
-	//- score bombs and armour
+	//-different terrains in the settings (as is is medium. flat is 1, high elevation is 3
+	//-point shop
+	//	+1 health
+	//	petrol canister
+	//	big bomb
+	//	strong bomb
 
 
 	/*
