@@ -100,12 +100,29 @@ void Player::DrawSettings(int turn)
 	if (s == RIGHT)
 		starting_column = cols - 18;
 
-	if (my_turn)
-		attron(A_STANDOUT);
-	ss << setw(10) << left << "Player: " << player;
-	mvaddstr(line++, starting_column, ss.str().c_str());
-	if (my_turn)
-		attroff(A_STANDOUT);
+	
+
+		if (my_turn)
+			attron(A_STANDOUT);
+		
+		//if the nickname has been changed tell nickname
+		if (nick == true)
+		{
+			ss << setw(10) << left << nickname;
+			mvaddstr(line++, starting_column, ss.str().c_str());
+		}
+
+		//if it hasn't been changed, give boring version
+		else
+		{
+			ss << setw(10) << left << "Player: " << player;
+			mvaddstr(line++, starting_column, ss.str().c_str());
+		}
+	
+		if (my_turn)
+			attroff(A_STANDOUT);
+	
+
 
 	ss = stringstream();
 	ss << setw(10) << left << "Angle: " << setw(6) << angle;

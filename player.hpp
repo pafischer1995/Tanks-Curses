@@ -22,6 +22,8 @@ public:
 	void AngleUp();								//increments angle up by one
 	void AngleDown();							//increments angle down by one
 
+	bool nick = false;
+	char * nickname;
 	bool win_check;								//checks to see if either player has one, based off health in main
 	int color = 0;								//starting color is 0. 1-7 are different colors
 	int gas = 5 + gas_toggle;					//takes the modified gas value from settings and adds it to gas
@@ -30,6 +32,7 @@ public:
 	int line;									//starts at 0, modified by draw
 	double power;								//amount of power behind shot
 	double angle;								//angle of shot
+	int points;
 
 	Side s;
 

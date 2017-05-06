@@ -37,9 +37,12 @@ int gas_toggle = 0;
 int health_toggle = 0;
 int color_toggle_one = 0;
 int color_toggle_two = 0;
+char temp_nickname_one[24];
+bool nickname_check_one = false;
+char temp_nickname_two[24];
+bool nickname_check_two = false;
 
 const double PI = 3.141592653589793238463;
-
 
 
 //this draws the game onto the screen so we can see it
@@ -187,6 +190,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 
 int MainMenu()
 {
+	curs_set(0);
 
 	int rv = 0;
 
@@ -228,13 +232,6 @@ int MainMenu()
 	move(LINES / 3 + 11, 17);
 	addstr(ss.str().c_str());
 
-	//this one puts the blinking cursor at the bottom left corner on main menu
-	ss = stringstream();
-	ss << " ";
-	move(LINES - 1, 0);
-	addstr(ss.str().c_str());
-
-
 	char c = getch();
 	switch (c)
 	{
@@ -274,47 +271,51 @@ void Credits()
 	erase();
 	refresh();
 	noecho();
+	bool is_b = false;
 
-	// (up and down, left and right)
-	stringstream ss;
-	ss << "Game written and developed by Paul A. Fischer.";
-	move(LINES / 2 - 4, 38);
-	addstr(ss.str().c_str());
-
-	ss = stringstream();
-	ss << "paulfischerproductions@gmail.com";
-	move(LINES / 2 - 1, COLS / 2 - 16);
-	addstr(ss.str().c_str());
-
-	ss = stringstream();
-	ss << "pfischer@carthage.edu";
-	move(LINES / 2, COLS / 2 - 11);
-	addstr(ss.str().c_str());
-
-	ss = stringstream();
-	ss << "Professor Perry Kivolowitz, Computer Science II";
-	move(LINES / 2 + 3, 37);
-	addstr(ss.str().c_str());
-
-	ss = stringstream();
-	ss << "(B) Back";
-	move(LINES - 2, COLS - 10);
-	addstr(ss.str().c_str());
-
-	char c = getch();
-	switch (c)
+	while (is_b == false)
 	{
-		//back
-	case 'b':
-	case 'B':
-		break;
+		// (up and down, left and right)
+		stringstream ss;
+		ss << "Game written and developed by Paul A. Fischer.";
+		move(LINES / 2 - 4, 38);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "paulfischerproductions@gmail.com";
+		move(LINES / 2 - 1, COLS / 2 - 16);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "pfischer@carthage.edu";
+		move(LINES / 2, COLS / 2 - 11);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "Professor Perry Kivolowitz, Computer Science II";
+		move(LINES / 2 + 3, 37);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "(B) Back";
+		move(LINES - 2, COLS - 10);
+		addstr(ss.str().c_str());
+
+		char c = getch();
+		switch (c)
+		{
+			//back
+		case 'b':
+		case 'B':
+			is_b = true;
+			break;
+		}
+
+		initscr();
+		noecho();
+		keypad(stdscr, 1);
+		refresh();
 	}
-
-	initscr();
-	noecho();
-	keypad(stdscr, 1);
-	refresh();
-
 }
 
 void Settings(Player & players)
@@ -331,6 +332,7 @@ void Settings(Player & players)
 		erase();
 		refresh();
 		noecho();
+		curs_set(0);
 
 		char square = ' ';
 
@@ -372,26 +374,26 @@ void Settings(Player & players)
 		}
 
 		ss = stringstream();
-		ss << setw(10) << left << "(1) Player 1 Nickname: ";
-		move(8, 9);
+		ss << setw(10) << left << "(1) Player 1 Nickname: " << temp_nickname_one;
+		move(7, 9);
 		addstr(ss.str().c_str());
 
 		ss = stringstream();
-		ss << setw(10) << right << "(2) Player 2 Nickname: ";
-		move(8, COLS / 2 + 9);
+		ss << setw(10) << right << "(2) Player 2 Nickname: " << temp_nickname_two;
+		move(7, COLS / 2 + 9);
 		addstr(ss.str().c_str());
 
 
 		ss = stringstream();
 		ss << setw(10) << left << "(3) Player 1 Color";
-		move(13, 9);
+		move(12, 9);
 		addstr(ss.str().c_str());
 		
 		if (color_toggle_one > 0)
 		{
 			ss = stringstream();
 			ss << "^";
-			move(17, 9 + (4 * color_toggle_one) - 4);
+			move(15, 9 + (4 * color_toggle_one) - 4);
 			addstr(ss.str().c_str());
 		}
 		
@@ -408,49 +410,49 @@ void Settings(Player & players)
 		attron(COLOR_PAIR(1));
 		ss = stringstream();
 		ss << setw(2) << right << square;
-		move(15, 9);
+		move(14, 9);
 		addstr(ss.str().c_str());
 
 
 		attron(COLOR_PAIR(2));
 		ss = stringstream();
 		ss << setw(2) << right << square;
-		move(15, 13);
+		move(14, 13);
 		addstr(ss.str().c_str());
 
 
 		attron(COLOR_PAIR(3));
 		ss = stringstream();
 		ss << setw(2) << right << square;
-		move(15, 17);
+		move(14, 17);
 		addstr(ss.str().c_str());
 
 
 		attron(COLOR_PAIR(4));
 		ss = stringstream();
 		ss << setw(2) << right << square;
-		move(15, 21);
+		move(14, 21);
 		addstr(ss.str().c_str());
 
 
 		attron(COLOR_PAIR(5));
 		ss = stringstream();
 		ss << setw(2) << right << square;
-		move(15, 25);
+		move(14, 25);
 		addstr(ss.str().c_str());
 
 
 		attron(COLOR_PAIR(6));
 		ss = stringstream();
 		ss << setw(2) << right << square;
-		move(15, 29);
+		move(14, 29);
 		addstr(ss.str().c_str());
 
 
 		attron(COLOR_PAIR(7));
 		ss = stringstream();
 		ss << setw(2) << right << square;
-		move(15, 33);
+		move(14, 33);
 		addstr(ss.str().c_str());
 
 		attroff(COLOR_PAIR(1));
@@ -463,14 +465,14 @@ void Settings(Player & players)
 
 		ss = stringstream();
 		ss << setw(10) << right << "(4) Player 2 Color";
-		move(13, COLS / 2 + 9);
+		move(12, COLS / 2 + 9);
 		addstr(ss.str().c_str());
 
 		if (color_toggle_two > 0)
 		{
 			ss = stringstream();
 			ss << "^";
-			move(17, (COLS / 2) + 9 + (4 * color_toggle_two) - 4);
+			move(15, (COLS / 2) + 9 + (4 * color_toggle_two) - 4);
 			addstr(ss.str().c_str());
 		}
 
@@ -486,49 +488,49 @@ void Settings(Player & players)
 		attron(COLOR_PAIR(1));
 		ss = stringstream();
 		ss << setw(2) << right << square;
-		move(15, COLS / 2 + 9);
+		move(14, COLS / 2 + 9);
 		addstr(ss.str().c_str());
 
 
 		attron(COLOR_PAIR(2));
 		ss = stringstream();
 		ss << setw(2) << right << square;
-		move(15, COLS / 2 + 13);
+		move(14, COLS / 2 + 13);
 		addstr(ss.str().c_str());
 
 
 		attron(COLOR_PAIR(3));
 		ss = stringstream();
 		ss << setw(2) << right << square;
-		move(15, COLS / 2 + 17);
+		move(14, COLS / 2 + 17);
 		addstr(ss.str().c_str());
 
 
 		attron(COLOR_PAIR(4));
 		ss = stringstream();
 		ss << setw(2) << right << square;
-		move(15, COLS / 2 + 21);
+		move(14, COLS / 2 + 21);
 		addstr(ss.str().c_str());
 
 
 		attron(COLOR_PAIR(5));
 		ss = stringstream();
 		ss << setw(2) << right << square;
-		move(15, COLS / 2 + 25);
+		move(14, COLS / 2 + 25);
 		addstr(ss.str().c_str());
 
 
 		attron(COLOR_PAIR(6));
 		ss = stringstream();
 		ss << setw(2) << right << square;
-		move(15, COLS / 2 + 29);
+		move(14, COLS / 2 + 29);
 		addstr(ss.str().c_str());
 
 
 		attron(COLOR_PAIR(7));
 		ss = stringstream();
 		ss << setw(2) << right << square;
-		move(15, COLS / 2 + 33);
+		move(14, COLS / 2 + 33);
 		addstr(ss.str().c_str());
 
 		attroff(COLOR_PAIR(1));
@@ -614,11 +616,28 @@ void Settings(Player & players)
 
 			//p1 nickname
 		case '1':
+		{
+			curs_set(1);
+			echo();
+			move(7, 32);
+			getstr(temp_nickname_one);
+			refresh();
+			nickname_check_one = true;
 			break;
+		}
+		
 
 			//p2 nickname
 		case '2':
+		{
+			curs_set(1);
+			echo();
+			move(7, COLS / 2 + 32);
+			getstr(temp_nickname_two);
+			refresh();
+			nickname_check_two = true;
 			break;
+		}
 
 			//p1 color
 		case '3':
@@ -654,8 +673,34 @@ void Settings(Player & players)
 	}
 }
 
+//http://stackoverflow.com/questions/18028808/blinking-underscore-with-console
+//this function hides the cursor in c++, found at website above
+void ShowConsoleCursor(bool showFlag)
+{
+	HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	CONSOLE_CURSOR_INFO cursorInfo;
+
+	GetConsoleCursorInfo(out, &cursorInfo);
+	cursorInfo.bVisible = showFlag;
+	SetConsoleCursorInfo(out, &cursorInfo);
+}
+
+
+
 void GameOver(string w)
 {
+	//this function hides the cursor, found in void function above gameover
+	ShowConsoleCursor(false);
+
+	//http://stackoverflow.com/questions/6899025/hide-user-input-on-password-prompt
+	//this hides cin input
+	HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
+	DWORD mode = 0;
+	GetConsoleMode(hStdin, &mode);
+	SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT));
+
+
 	string whitespace;
 	whitespace = "\t\t\t\t\t";
 
@@ -709,7 +754,7 @@ int main(int argc, char * argv[])
 			keypad(stdscr, 1);
 			refresh();
 
-			int x = 0;;
+			int x = 0;
 			x = MainMenu();
 
 			//quit
@@ -765,11 +810,29 @@ int main(int argc, char * argv[])
 			Ground g;
 			Player players[2];
 
+			if (nickname_check_one == true)
+			{
+				players[0].nick = true;
+			}
+
+			if (nickname_check_two == true)
+			{
+				players[1].nick = true;
+			}
+
+
+			players[0].color = color_toggle_one;
+			players[1].color = color_toggle_two;
+
+			players[0].nickname = temp_nickname_one;
+			players[1].nickname = temp_nickname_two;
+
 			initscr();
 			noecho();
 			resize_term(lines, cols);
 			keypad(stdscr, 1);
 			curs_set(0);
+
 
 			g.InitializeGround();
 			//players.initialize spawns the tanks location
@@ -782,6 +845,7 @@ int main(int argc, char * argv[])
 			//drawsettings creates the words, gas, and health
 			DrawScreen(g, players, turn);
 
+			refresh();
 
 			//this loop is a players turn
 			while (keep_going)
@@ -924,26 +988,38 @@ int main(int argc, char * argv[])
 			GameOver(w);
 
 
-			char input;
-			cin >> input;
 
 
-			//if you hit Y it starts over
-			if ((input == 'y') || (input == 'Y'))
+
+
+			char input = ' ';
+
+			while (input == ' ')
 			{
-				continue;
+				cin >> input;
+
+
+				//if you hit Y it starts over
+				if ((input == 'y') || (input == 'Y') || (input == 'n') || (input == 'N'))
+				{
+					break;
+				}
+
+				else 
+				{
+					continue;
+				}
 			}
 
-			
-			if ((input == 'n' || input == 'N'))
+			if (input == 'n' || input == 'N')
 			{
 				break;
 			}
-
 			else
 			{
 				continue;
 			}
+			
 
 #if defined(WIN32)
 			system("pause");
@@ -951,18 +1027,22 @@ int main(int argc, char * argv[])
 			return 0;
 		}
 	}
+	
+	//Bugs
 
-	//if the ground doesn't have an icon make it so you can't move past it
-	//(this is only a problem if the ground is smoothed. if changed back to 8-bit it renders fine.
+	//-fix flash that occurs during 'play'
+	//-ground doesn't take damage after a certain column
+	//-bug where it has to have main menu x2 times to get a fresh map (this is due to the DrawScreen function
+	//-
+
 
 	//extra credit Ideas
 
+	//if the ground doesn't have an icon make it so you can't move past it
 	//- wind
 	//- player names
 	//-different terrains in the settings
 	//- score bombs and armour
-
-	//- see if you can get a visual for shooting -- don't think this is possible in a terminal
 
 
 	/*
