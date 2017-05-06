@@ -5,6 +5,9 @@
 
 
 // (up and down, left and right)
+//stringstream cannot use curses/ncurses operations
+//use stringstream for c++
+//use addch and char* for ncurses
 
 #include <iostream>
 #include <sstream>
@@ -34,7 +37,7 @@ extern int lines;					//extern means there is a global variable somewhere, but i
 extern int cols;
 extern int base_height_divisor;
 extern int max_height_divisor;
-int gas_toggle = 0;
+int gas_toggle = 5;
 int health_toggle = 0;
 int color_toggle_one = 0;
 int color_toggle_two = 0;
@@ -46,6 +49,8 @@ int p1s = 0;						//player 1 score storage
 int p2s = 0;						//player 2 score storage
 
 const double PI = 3.141592653589793238463;
+
+
 
 
 //this draws the game onto the screen so we can see it
@@ -562,7 +567,7 @@ void Settings(Player & players)
 		addstr(ss.str().c_str());
 
 		ss = stringstream();
-		ss << setw(10) << right << "(P) Starting Petrol \t<" << Player().gas << ">";
+		ss << setw(10) << right << "(P) Starting Petrol \t<" << gas_toggle << ">";
 		move(27, 9);
 		addstr(ss.str().c_str());
 
@@ -584,14 +589,14 @@ void Settings(Player & players)
 
 		case 'p':
 		case 'P':
-			if (gas_toggle < 10)
+			if (gas_toggle < 15)
 			{
 				gas_toggle++;
 				break;
 			}
-			else if (gas_toggle == 10)
+			else if (gas_toggle == 15)
 			{
-				gas_toggle = -5;
+				gas_toggle = 0;
 				break;
 			}
 
@@ -678,6 +683,118 @@ void Settings(Player & players)
 	}
 }
 
+void Pointshop(Player players)
+{
+	bool ps = true;
+
+	while (ps == true)
+	{
+		stringstream ss;
+
+		for (unsigned int i = 0; i < 28; i++)
+		{
+			mvaddch(2, COLS / 2 - 16 + i, ACS_HLINE);
+			mvaddch(15, COLS / 2 - 16 + i, ACS_HLINE);
+		}
+
+		for (unsigned int i = 0; i < 13; i++)
+		{
+			mvaddch(2 + i, COLS / 2 - 16, ACS_VLINE);
+			mvaddch(2 + i, COLS / 2 + 12, ACS_VLINE);
+		}
+
+		//this means move to this location (row, col, ch) and add the char
+		//upper left
+		mvaddch(2, COLS / 2 - 16, ACS_ULCORNER);
+		//upper right
+		mvaddch(2, COLS / 2 + 12, ACS_URCORNER);
+		//lower left
+		mvaddch(15, COLS / 2 - 16, ACS_LLCORNER);
+		//lower right
+		mvaddch(15, COLS / 2 + 12, ACS_LRCORNER);
+		refresh();
+	
+		
+
+			ss = stringstream();
+			ss << "PointShop\t\t  ";
+			move(4, COLS / 2 - 14);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "(L) Large Bomb [75c]";
+			move(6, COLS / 2 - 14);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "(S) Strong Bomb [75c]";
+			move(8, COLS / 2 - 14);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "(H) Health Pack [50c]";
+			move(10, COLS / 2 - 14);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "(P) Petrol Jerrycan [25c]";
+			move(12, COLS / 2 - 14);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "(B) Back";
+			move(14, COLS / 2 + 3);
+			addstr(ss.str().c_str());
+
+		int c = getch();
+		switch (c)
+		{
+
+			case 'b':
+			case 'B':
+			{
+				ps = false;
+				break;
+			}
+
+			//Large Bomb - make bomb radius check bigger
+			case 'l':
+			case 'L':
+			{
+				//make bomb radius check bigger
+				players.bomb_type = 2;
+				break;
+			}
+
+
+			//Strong Bomb - make bomb damage more
+			case 's':
+			case 'S':
+			{
+				players.bomb_type = 1;
+				break;
+			}
+
+			case 'h':
+			case 'H':
+			{
+				players.health = players.health + 1;
+				break;
+			}
+
+			case 'p':
+			case 'P':
+			{
+				players.gas = players.gas + 1;
+				break;
+			}
+		//end of switch loop
+		}
+	//end of while loop
+	}
+}
+
+
 //http://stackoverflow.com/questions/18028808/blinking-underscore-with-console
 //this function hides the cursor in c++, found at website above
 void ShowConsoleCursor(bool showFlag)
@@ -695,6 +812,7 @@ void ShowConsoleCursor(bool showFlag)
 
 void GameOver(string w)
 {
+
 	//this function hides the cursor, found in void function above gameover
 	ShowConsoleCursor(false);
 
@@ -745,7 +863,6 @@ int main(int argc, char * argv[])
 	{
 
 		bool quit = true;
-		
 
 		//this loops back to the starting menu
 		while (true)
@@ -825,6 +942,10 @@ int main(int argc, char * argv[])
 			}
 
 
+			players[0].gas = players[0].gas + gas_toggle;
+			players[1].gas = players[1].gas + gas_toggle;
+
+
 			players[0].color = color_toggle_one;
 			players[1].color = color_toggle_two;
 
@@ -874,10 +995,6 @@ int main(int argc, char * argv[])
 					keep_going = false;
 					break;
 
-					//			L							2
-					//	     C-    C					4		5
-					//			L-							3
-
 
 				case KEY_LEFT:		//left arrow
 					if (players[turn].s == RIGHT)
@@ -912,16 +1029,19 @@ int main(int argc, char * argv[])
 				case KEY_ENTER:
 				case PADENTER:
 				case ' ':
+				{
 					Shoot(g, players, turn, bullet_impact_horizontal, bullet_impact_vertical);
 					//this makes it so each player regenerates one gas a turn unless at max tank size
-					if (players[turn].gas < 5)
+					if (players[turn].gas < gas_toggle)
 					{
-						players[turn].gas++;
+						players[turn].gas = players[turn].gas + 1;
+						turn = 1 - turn;
+						break;
 					}
-
-					turn = 1 - turn;
-					break;
-
+					else
+						turn = 1 - turn;
+						break;
+				}
 
 					//move left
 				case 'a':
@@ -949,6 +1069,37 @@ int main(int argc, char * argv[])
 					else
 						continue;
 
+				case 'p':
+				case 'P':
+				{
+					Pointshop(players[turn]);
+					break;
+				}
+
+				
+				case KEY_DL:
+				case KEY_DC:
+				case KEY_BACKSPACE:
+				{
+					if (players[turn].gas + 1 == gas_toggle)
+					{
+						players[turn].gas = players[turn].gas + 1;
+						turn = 1 - turn;
+						break;
+					}
+					else if (players[turn].gas < gas_toggle)
+					{
+						players[turn].gas = players[turn].gas + 2;
+						turn = 1 - turn;
+						break;
+					}
+					else
+					{
+						turn = 1 - turn;
+						break;
+					}
+				}
+				
 
 				case 'q':
 				case 'Q':
@@ -1055,15 +1206,17 @@ int main(int argc, char * argv[])
 	}
 	
 
-	//make it so input moves on right away in game over menu
-
+	//try to make health hearts
+	//make health red
+	//consider highlighting all the players info on their turn
 
 	//Bugs
 
 	//-fix flash that occurs during 'play'
 	//-ground doesn't take damage after a certain column
-	//-bug where it has to have main menu x2 times to get a fresh map (this is due to the DrawScreen function
-
+	//-bug where it has to have main menu x2 times to get a fresh map (this is due to the DrawScreen function)
+	//-game crashed once when bomb went off screen at the very bottom right corner, didn't hit ground
+	//-first ground is still wrong
 
 	//extra credit Ideas
 
@@ -1075,6 +1228,7 @@ int main(int argc, char * argv[])
 	//	petrol canister
 	//	big bomb
 	//	strong bomb
+	//make a ascii robot thing that welcomes player to pointshop, they can say sorry you don't have credits, or maybe a random line about purchasing the thing they bought
 
 
 	/*

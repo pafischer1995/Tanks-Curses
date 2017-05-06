@@ -1,7 +1,6 @@
 #pragma once
 #include "ground.hpp"
 
-extern int gas_toggle;
 extern int health_toggle;
 
 enum Side
@@ -25,9 +24,10 @@ public:
 	bool nick = false;
 	char * nickname;
 	bool win_check;								//checks to see if either player has one, based off health in main
+	int bomb_type = 0;							//bomb type 0 is regular bomb, 1 is strong bomb, 2 is large bomb
 	int color = 0;								//starting color is 0. 1-7 are different colors
-	int gas = 5 + gas_toggle;					//takes the modified gas value from settings and adds it to gas
-	int health = 3 + health_toggle;				//takes the modified heatlh value from settings and adds it to health
+	int gas = 0;								
+	int health = 3 + health_toggle;			//takes the modified heatlh value from settings and adds it to health
 	int points = 0;
 	int col;									//starts at 0, modified by initialize
 	int line;									//starts at 0, modified by draw

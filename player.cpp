@@ -121,7 +121,7 @@ void Player::DrawSettings(int turn)
 		if (my_turn)
 			attroff(A_STANDOUT);
 	
-
+		char credit = 128;
 
 	ss = stringstream();
 	ss << setw(10) << left << "Angle: " << setw(6) << angle;
@@ -132,10 +132,13 @@ void Player::DrawSettings(int turn)
 	mvaddstr(line++, starting_column, ss.str().c_str());
 
 	ss = stringstream();
-	ss << setw(10) << left << "Points: " << setw(6) << points;
+	ss << credit << " [" << points << "]";
 	mvaddstr(line++, starting_column, ss.str().c_str());
 
-
+	ss = stringstream();
+	ss << "(P) Pointshop";
+	move(4, COLS / 2 - 7);
+	addstr(ss.str().c_str());
 
 	ss = stringstream();
 	for (unsigned int i = 0; i < health; i++)
@@ -159,6 +162,5 @@ void Player::DrawSettings(int turn)
 		ss << "Out of Petrol.";
 		mvaddstr(line, starting_column, ss.str().c_str());
 	}
-
 
 }
