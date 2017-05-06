@@ -12,7 +12,6 @@ extern int cols;
 extern int base_height_divisor;
 extern int max_height_divisor;
 
-
 const int Player::power_increment = 1;
 const double Player::angle_increment = 1;
 
@@ -130,8 +129,13 @@ void Player::DrawSettings(int turn)
 
 	ss = stringstream();
 	ss << setw(10) << left << "Power: " << setw(6) << power;
-
 	mvaddstr(line++, starting_column, ss.str().c_str());
+
+	ss = stringstream();
+	ss << setw(10) << left << "Points: " << setw(4) << points;
+	mvaddstr(line++, starting_column, ss.str().c_str());
+
+
 
 	ss = stringstream();
 	for (unsigned int i = 0; i < health; i++)
@@ -155,5 +159,6 @@ void Player::DrawSettings(int turn)
 		ss << "Out of Petrol.";
 		mvaddstr(line, starting_column, ss.str().c_str());
 	}
+
 
 }

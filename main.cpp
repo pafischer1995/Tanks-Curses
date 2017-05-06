@@ -14,6 +14,7 @@
 #include <cmath>
 #include <Windows.h>
 #include <locale.h>
+#include <conio.h>
 
 
 #if defined(WIN32)
@@ -41,6 +42,8 @@ char temp_nickname_one[24];
 bool nickname_check_one = false;
 char temp_nickname_two[24];
 bool nickname_check_two = false;
+int p1s = 0;						//player 1 score
+int p2s = 0;						//player 2 score
 
 const double PI = 3.141592653589793238463;
 
@@ -739,9 +742,8 @@ int main(int argc, char * argv[])
 	while (true)
 	{
 
-
 		bool quit = true;
-
+		
 
 		//this loops back to the starting menu
 		while (true)
@@ -991,12 +993,11 @@ int main(int argc, char * argv[])
 
 
 
-
 			char input = ' ';
 
-			while (input == ' ')
+			while ((input != 'y') || (input != 'Y') || (input != 'n') || (input != 'N'))
 			{
-				cin >> input;
+			input =	_getch();
 
 
 				//if you hit Y it starts over
@@ -1028,19 +1029,22 @@ int main(int argc, char * argv[])
 		}
 	}
 	
+
+	//make it so input moves on right away in game over menu
+
+
 	//Bugs
 
 	//-fix flash that occurs during 'play'
 	//-ground doesn't take damage after a certain column
 	//-bug where it has to have main menu x2 times to get a fresh map (this is due to the DrawScreen function
-	//-
+	//-bug where the ground will do a / at ground.(0) even if it's equal with next ground
 
 
 	//extra credit Ideas
 
 	//if the ground doesn't have an icon make it so you can't move past it
 	//- wind
-	//- player names
 	//-different terrains in the settings
 	//- score bombs and armour
 

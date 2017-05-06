@@ -32,7 +32,7 @@ public:
 	int line;									//starts at 0, modified by draw
 	double power;								//amount of power behind shot
 	double angle;								//angle of shot
-	int points;
+	int points = 0;
 
 	Side s;
 

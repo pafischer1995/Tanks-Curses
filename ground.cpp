@@ -36,6 +36,13 @@ void Ground::Draw()
 	
 	//goes from left to right. + rows and cols
 	//first 3 are for the first land, next are for the others
+	bool first_turn = true;
+	while (first_turn == true)
+	{
+		(ground.at(1) == ground.at(0));
+		mvaddch(ground.at(0), 1, '_');
+		first_turn = false;
+	}
 
 	if (ground.at(1) > ground.at(0))
 	{
@@ -50,9 +57,8 @@ void Ground::Draw()
 	else
 	{
 		(ground.at(1) == ground.at(0));
-			mvaddch(ground.at(0), 1, '_');
+		mvaddch(ground.at(0), 1, '_');
 	}
-	
 
 
 	for (size_t i = 1; i < ground.size(); i++)
