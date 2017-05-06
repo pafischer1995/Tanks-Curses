@@ -132,7 +132,7 @@ void Player::DrawSettings(int turn)
 	mvaddstr(line++, starting_column, ss.str().c_str());
 
 	ss = stringstream();
-	ss << setw(10) << left << "Points: " << setw(4) << points;
+	ss << setw(10) << left << "Points: " << setw(6) << points;
 	mvaddstr(line++, starting_column, ss.str().c_str());
 
 

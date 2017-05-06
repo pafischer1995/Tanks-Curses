@@ -28,11 +28,12 @@ public:
 	int color = 0;								//starting color is 0. 1-7 are different colors
 	int gas = 5 + gas_toggle;					//takes the modified gas value from settings and adds it to gas
 	int health = 3 + health_toggle;				//takes the modified heatlh value from settings and adds it to health
+	int points = 0;
 	int col;									//starts at 0, modified by initialize
 	int line;									//starts at 0, modified by draw
 	double power;								//amount of power behind shot
 	double angle;								//angle of shot
-	int points = 0;
+
 
 	Side s;
 

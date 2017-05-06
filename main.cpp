@@ -42,8 +42,8 @@ char temp_nickname_one[24];
 bool nickname_check_one = false;
 char temp_nickname_two[24];
 bool nickname_check_two = false;
-int p1s = 0;						//player 1 score
-int p2s = 0;						//player 2 score
+int p1s = 0;						//player 1 score storage
+int p2s = 0;						//player 2 score storage
 
 const double PI = 3.141592653589793238463;
 
@@ -165,6 +165,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	{
 		if (biv == players[0].line || biv == players[0].line + 1 || biv == players[0].line - 1)
 		{
+			p1s + 25;
 			players[0].health--;
 		}
 	}
@@ -174,6 +175,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	{
 		if (biv == players[1].line || biv == players[1].line + 1 || biv == players[1].line - 1)
 		{
+			p2s + 25;
 			players[1].health--;
 		}
 	}
@@ -182,11 +184,13 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	//win check
 	if (players[0].health == 0)
 	{
+		p2s + 50;
 		players[1].win_check = true;
 	}
 
 	if (players[1].health == 0)
 	{
+		p1s + 50;
 		players[0].win_check = true;
 	}
 }
@@ -829,6 +833,9 @@ int main(int argc, char * argv[])
 			players[0].nickname = temp_nickname_one;
 			players[1].nickname = temp_nickname_two;
 
+			players[0].points = p1s;
+			players[1].points = p2s;
+
 			initscr();
 			noecho();
 			resize_term(lines, cols);
@@ -1038,7 +1045,6 @@ int main(int argc, char * argv[])
 	//-fix flash that occurs during 'play'
 	//-ground doesn't take damage after a certain column
 	//-bug where it has to have main menu x2 times to get a fresh map (this is due to the DrawScreen function
-	//-bug where the ground will do a / at ground.(0) even if it's equal with next ground
 
 
 	//extra credit Ideas
