@@ -45,8 +45,11 @@ char temp_nickname_one[24];
 bool nickname_check_one = false;
 char temp_nickname_two[24];
 bool nickname_check_two = false;
-int p1s = 250;						//player 1 score storage
+
+int p1s = 0;						//player 1 score storage
 int p2s = 0;						//player 2 score storage
+int ground_type = 2;
+bool wind_change = false;
 
 const double PI = 3.141592653589793238463;
 
@@ -316,8 +319,8 @@ int MainMenu()
 	addstr(ss.str().c_str());
 
 	ss = stringstream();
-	ss << "(P) Play \t\t (S) Settings \t\t (C) Credits \t\t (Q) Quit";
-	move(LINES / 3 + 11, 17);
+	ss << "(P) Play      (S) Settings      (C) Credits      (L) Log      (Q) Quit";
+	move(LINES / 3 + 11, 21);
 	addstr(ss.str().c_str());
 
 	char c = getch();
@@ -341,12 +344,19 @@ int MainMenu()
 		rv = 3;
 		break;
 
+	case 'l':
+	case 'L':
+		rv = 5;
+		break;
 
 		//quit
 	case 'q':
 	case 'Q':
 		rv = 4;
 		break;
+
+		//quit
+
 
 		//add a case where if none of the options are chosen nothing happens
 		noecho();
@@ -476,7 +486,7 @@ void Settings(Player & players)
 		ss << setw(10) << left << "(3) Player 1 Color";
 		move(12, 9);
 		addstr(ss.str().c_str());
-		
+
 		if (color_toggle_one > 0)
 		{
 			ss = stringstream();
@@ -484,7 +494,7 @@ void Settings(Player & players)
 			move(15, 9 + (4 * color_toggle_one) - 4);
 			addstr(ss.str().c_str());
 		}
-		
+
 
 		start_color();
 		init_pair(1, COLOR_BLACK, COLOR_RED);
@@ -629,15 +639,50 @@ void Settings(Player & players)
 		attroff(COLOR_PAIR(6));
 		attroff(COLOR_PAIR(7));
 
-		ss = stringstream();
-		ss << setw(10) << right << "(T) Toggle Terrain Type: \t\t High \t\t Medium \t   Low ";
-		move(21, 9);
-		addstr(ss.str().c_str());
+	
+	
+		if (ground_type == 1)
+		{
+			ss = stringstream();
+			ss << setw(10) << right << "(T) Toggle Terrain Type: \t    <Low>          Medium          High ";
+			move(21, 9);
+			addstr(ss.str().c_str());
+			refresh();
+		}
+		else if (ground_type == 2)
+		{;
+			ss = stringstream();
+			ss << setw(10) << right << "(T) Toggle Terrain Type: \t     Low          <Medium>         High ";
+			move(21, 9);
+			addstr(ss.str().c_str());
+			refresh();
+		}
+		else if (ground_type == 3)
+		{
+			ss = stringstream();
+			ss << setw(10) << right << "(T) Toggle Terrain Type: \t     Low           Medium         <High> ";
+			move(21, 9);
+			addstr(ss.str().c_str());
+			refresh();
+		}
 
-		ss = stringstream();
-		ss << setw(10) << right << "(W) Toggle Wind: \t\t\t High \t\t Medium \t   Low ";
-		move(23, 9);
-		addstr(ss.str().c_str());
+
+
+		if (wind_change == true)
+		{
+			ss = stringstream();
+			ss << setw(10) << right << "(W) Toggle Wind: \t\t    <True>          False ";
+			move(23, 9);
+			addstr(ss.str().c_str());
+		}
+		else if (wind_change == false)
+		{
+			ss = stringstream();
+			ss << setw(10) << right << "(W) Toggle Wind: \t\t     True          <False>";
+			move(23, 9);
+			addstr(ss.str().c_str());
+		}
+		
 
 		ss = stringstream();
 		ss << setw(10) << right << "(H) Starting Health \t<" << health_toggle << ">";
@@ -686,7 +731,7 @@ void Settings(Player & players)
 				health_toggle++;
 				break;
 			}
-			if (health_toggle == 5)
+			else if (health_toggle == 5)
 			{
 				health_toggle = 1;
 				break;
@@ -695,29 +740,70 @@ void Settings(Player & players)
 			//wind toggle
 		case 'w':
 		case 'W':
-			break;
+		{
+			if (wind_change == true)
+			{
+				wind_change = false;
+				break;
+			}
+			else if (wind_change == false)
+			{
+				wind_change = true;
+				break;
+			}
+		}
 
 			//terrain toggle
 		case 't':
 		case 'T':
-			break;
+		{
+			if (ground_type < 3)
+			{
+				ground_type++;
+				break;
+			}
+			else if (ground_type == 3)
+			{
+				ground_type = 1;
+				break;
+			}
+		}
 
 			//p1 nickname
 		case '1':
 		{
-			curs_set(1);
-			echo();
-			move(7, 32);
-			getstr(temp_nickname_one);
-			refresh();
-			nickname_check_one = true;
-			break;
+			if (nickname_check_one == true)
+			{
+				stringstream ss;
+				ss << "                    ";
+				move(7, 32);
+				addstr(ss.str().c_str());
+				refresh();
+				
+			}
+				curs_set(1);
+				echo();
+				move(7, 32);
+				getstr(temp_nickname_one);
+				refresh();
+				nickname_check_one = true;
+				break;	
 		}
 		
 
 			//p2 nickname
 		case '2':
 		{
+			if (nickname_check_two == true)
+			{
+				stringstream ss;
+				ss << "                    ";
+				move(7, COLS /2 + 32);
+				addstr(ss.str().c_str());
+				refresh();
+
+			}
+			refresh();
 			curs_set(1);
 			echo();
 			move(7, COLS / 2 + 32);
@@ -1045,7 +1131,44 @@ void ShowConsoleCursor(bool showFlag)
 	SetConsoleCursorInfo(out, &cursorInfo);
 }
 
+void Log()
+{
 
+	erase();
+	refresh();
+	noecho();
+	bool is_l = true;
+
+	while (is_l == true)
+	{
+
+		stringstream ss;
+		ss << setw(10) << right << "Add Log";
+		move(LINES / 2, COLS /2);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "(B) Back";
+		move(LINES - 2, COLS - 10);
+		addstr(ss.str().c_str());
+
+		char c = getch();
+		switch (c)
+		{
+			//back
+		case 'b':
+		case 'B':
+			is_l = false;
+			break;
+		}
+
+		initscr();
+		noecho();
+		keypad(stdscr, 1);
+		refresh();
+	
+	}
+}
 
 void GameOver(string w)
 {
@@ -1116,6 +1239,16 @@ int main(int argc, char * argv[])
 			x = MainMenu();
 
 			//quit
+
+			if (x == 5)
+			{
+				initscr();
+				noecho();
+				keypad(stdscr, 1);
+				refresh();
+				Log();
+			}
+
 			if (x == 4)
 			{
 				quit = false;
@@ -1142,6 +1275,7 @@ int main(int argc, char * argv[])
 				refresh();
 				Settings(Player());
 			}
+
 
 			//play
 			else if (x == 1)
@@ -1339,6 +1473,14 @@ int main(int argc, char * argv[])
 					}
 				}
 				
+				//for presentation purposes, M = MONEYMONEYMONEYMONEY or MAKEITRAINNN
+				case 'm':
+				case 'M':
+				{
+					players[turn].points = players[turn].points + 50;
+					refresh();
+					break;
+				}
 
 				case 'q':
 				case 'Q':
@@ -1458,7 +1600,6 @@ int main(int argc, char * argv[])
 
 	//try to make health hearts
 	//changes log
-	//finish the two bomb types
 
 	//Bugs
 
@@ -1467,6 +1608,7 @@ int main(int argc, char * argv[])
 	//-bug where it has to have main menu x2 times to get a fresh map (this is due to the DrawScreen function)
 	//-game crashed once when bomb went off screen at the very bottom right corner, didn't hit ground
 	//-first ground is still wrong
+	//-see if you can clear nickname after assigning it, that way if you change it in the settings it shows nothing, not previous name
 
 	//extra credit Ideas
 
@@ -1474,8 +1616,6 @@ int main(int argc, char * argv[])
 	//- wind
 	//-different terrains in the settings (as is is medium. flat is 1, high elevation is 3
 	//fill ground
-	//	big bomb - almost done
-	//	strong bomb - almost done
 	//make a ascii robot thing that welcomes player to pointshop, they can say sorry you don't have credits, or maybe a random line about purchasing the thing they bought
 
 }

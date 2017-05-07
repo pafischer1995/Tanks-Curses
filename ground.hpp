@@ -5,6 +5,7 @@
 class Ground
 {
 public:
+	int ground_type = 0;
 	void InitializeGround();
 	void Draw();
 
