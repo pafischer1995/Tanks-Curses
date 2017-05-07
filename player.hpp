@@ -1,7 +1,7 @@
 #pragma once
 #include "ground.hpp"
 
-extern int health_toggle;
+
 
 enum Side
 {
@@ -27,7 +27,7 @@ public:
 	int bomb_type = 0;							//bomb type 0 is regular bomb, 1 is strong bomb, 2 is large bomb
 	int color = 0;								//starting color is 0. 1-7 are different colors
 	int gas = 0;								
-	int health = 3 + health_toggle;			//takes the modified heatlh value from settings and adds it to health
+	int health = 0;			//takes the modified heatlh value from settings and adds it to health
 	int points = 0;
 	int col;									//starts at 0, modified by initialize
 	int line;									//starts at 0, modified by draw

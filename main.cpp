@@ -38,14 +38,14 @@ extern int cols;
 extern int base_height_divisor;
 extern int max_height_divisor;
 int gas_toggle = 5;
-int health_toggle = 0;
+int health_toggle = 3;
 int color_toggle_one = 0;
 int color_toggle_two = 0;
 char temp_nickname_one[24];
 bool nickname_check_one = false;
 char temp_nickname_two[24];
 bool nickname_check_two = false;
-int p1s = 0;						//player 1 score storage
+int p1s = 250;						//player 1 score storage
 int p2s = 0;						//player 2 score storage
 
 const double PI = 3.141592653589793238463;
@@ -562,7 +562,7 @@ void Settings(Player & players)
 		addstr(ss.str().c_str());
 
 		ss = stringstream();
-		ss << setw(10) << right << "(H) Starting Health \t<" << Player().health << ">";
+		ss << setw(10) << right << "(H) Starting Health \t<" << health_toggle << ">";
 		move(25, 9);
 		addstr(ss.str().c_str());
 
@@ -603,14 +603,14 @@ void Settings(Player & players)
 			//health
 		case 'h':
 		case 'H':
-			if (health_toggle < 2)
+			if (health_toggle < 5)
 			{
 				health_toggle++;
 				break;
 			}
-			if (health_toggle == 2)
+			if (health_toggle == 5)
 			{
-				health_toggle = -2;
+				health_toggle = 0;
 				break;
 			}
 
@@ -683,21 +683,26 @@ void Settings(Player & players)
 	}
 }
 
-void Pointshop(Player players)
+void Pointshop(Ground & g, Player * players, int turn)
 {
 	bool ps = true;
 
 	while (ps == true)
 	{
+		erase();
+		DrawScreen(g, players, turn);
+		refresh();
+		noecho();
+
 		stringstream ss;
 
 		for (unsigned int i = 0; i < 28; i++)
 		{
 			mvaddch(2, COLS / 2 - 16 + i, ACS_HLINE);
-			mvaddch(15, COLS / 2 - 16 + i, ACS_HLINE);
+			mvaddch(16, COLS / 2 - 16 + i, ACS_HLINE);
 		}
 
-		for (unsigned int i = 0; i < 13; i++)
+		for (unsigned int i = 0; i < 14; i++)
 		{
 			mvaddch(2 + i, COLS / 2 - 16, ACS_VLINE);
 			mvaddch(2 + i, COLS / 2 + 12, ACS_VLINE);
@@ -709,9 +714,9 @@ void Pointshop(Player players)
 		//upper right
 		mvaddch(2, COLS / 2 + 12, ACS_URCORNER);
 		//lower left
-		mvaddch(15, COLS / 2 - 16, ACS_LLCORNER);
+		mvaddch(16, COLS / 2 - 16, ACS_LLCORNER);
 		//lower right
-		mvaddch(15, COLS / 2 + 12, ACS_LRCORNER);
+		mvaddch(16, COLS / 2 + 12, ACS_LRCORNER);
 		refresh();
 	
 		
@@ -743,7 +748,7 @@ void Pointshop(Player players)
 
 			ss = stringstream();
 			ss << "(B) Back";
-			move(14, COLS / 2 + 3);
+			move(15, COLS / 2 + 3);
 			addstr(ss.str().c_str());
 
 		int c = getch();
@@ -757,37 +762,189 @@ void Pointshop(Player players)
 				break;
 			}
 
-			//Large Bomb - make bomb radius check bigger
+			//Large Bomb - make bomb radius check bigger 75
 			case 'l':
 			case 'L':
 			{
-				//make bomb radius check bigger
-				players.bomb_type = 2;
-				break;
+				char credit = 128;
+				
+				if (players[turn].bomb_type != 0)
+				{
+					ss = stringstream();
+					ss << "A bomb is already equpped. ";
+					move(14, COLS / 2 - 15);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(2000);
+					break;
+				}
+
+				else if (players[turn].points < 75)
+				{
+					ss = stringstream();
+					ss << "Not enough " << credit << "'s.";
+					move(14, COLS / 2 - 14);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(1500);
+					break;
+				}
+
+				else
+				{
+					ss = stringstream();
+					ss << "- 75" << credit << "'s.";
+					move(14, COLS / 2 - 14);
+					addstr(ss.str().c_str());
+
+					players[turn].points = players[turn].points - 75;
+					players[turn].bomb_type = 2;
+					refresh();
+					Sleep(1500);
+					break;
+				}
 			}
 
 
-			//Strong Bomb - make bomb damage more
+			//Strong Bomb - make bomb damage more 75
 			case 's':
 			case 'S':
 			{
-				players.bomb_type = 1;
-				break;
+				char credit = 128;
+
+				if (players[turn].bomb_type != 0)
+				{
+					ss = stringstream();
+					ss << "A bomb is already equpped.";
+					move(14, COLS / 2 - 14);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(2000);
+					break;
+				}
+
+				else if (players[turn].points < 75)
+				{
+					ss = stringstream();
+					ss << "Not enough " << credit << "'s.";
+					move(14, COLS / 2 - 14);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(1500);
+					break;
+				}
+
+				else
+				{
+					ss = stringstream();
+					ss << "- 75" << credit << "'s.";
+					move(14, COLS / 2 - 14);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(1500);
+
+					players[turn].points = players[turn].points - 75;
+					players[turn].bomb_type = 1;
+					break;
+				}
 			}
 
+			//Health Refill 50
 			case 'h':
 			case 'H':
 			{
-				players.health = players.health + 1;
-				break;
+				char credit = 128;
+
+				if (players[turn].points < 50)
+				{
+					ss = stringstream();
+					ss << "Not enough " << credit << "'s.";
+					move(14, COLS / 2 - 14);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(1500);
+					break;
+				}
+
+				else if (players[turn].health == 5)
+				{
+					ss = stringstream();
+					ss << "At max health.";
+					move(14, COLS / 2 - 15);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(2000);
+					break;
+				}
+
+				else
+				{
+
+					ss = stringstream();
+					ss << "- 50" << credit << "'s.";
+					move(14, COLS / 2 - 14);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(1500);
+
+					players[turn].points = players[turn].points - 50;
+					players[turn].health++;
+					erase();
+					DrawScreen(g, players, turn);
+					refresh();
+					break;
+				}
+				
 			}
 
+			//Gasoline refill 25
 			case 'p':
 			case 'P':
 			{
-				players.gas = players.gas + 1;
-				break;
+				char credit = 128;
+
+				if (players[turn].gas == gas_toggle)
+				{
+					ss = stringstream();
+					ss << "Petrol Full.";
+					move(14, COLS / 2 - 15);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(2000);
+					break;
+				}
+
+				else if (players[turn].points < 25)
+				{
+					ss = stringstream();
+					ss << "Not enough " << credit << "'s.";
+					move(14, COLS / 2 - 14);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(1500);
+					break;
+				}
+
+				else
+				{
+					players[turn].points = players[turn].points - 25;
+					players[turn].gas = gas_toggle;
+
+					ss = stringstream();
+					ss << "- 25" << credit << "'s.";
+					move(14, COLS / 2 - 14);
+					addstr(ss.str().c_str());
+
+					erase();
+					DrawScreen(g, players, turn);
+					refresh();
+					break;
+				}
+
 			}
+			erase();
+			refresh();
+			DrawScreen(g, players, turn);
 		//end of switch loop
 		}
 	//end of while loop
@@ -941,6 +1098,8 @@ int main(int argc, char * argv[])
 				players[1].nick = true;
 			}
 
+			players[0].health = players[0].health + health_toggle;
+			players[1].health = players[1].health + health_toggle;
 
 			players[0].gas = players[0].gas + gas_toggle;
 			players[1].gas = players[1].gas + gas_toggle;
@@ -1072,7 +1231,7 @@ int main(int argc, char * argv[])
 				case 'p':
 				case 'P':
 				{
-					Pointshop(players[turn]);
+					Pointshop(g, players, turn);
 					break;
 				}
 
@@ -1208,7 +1367,6 @@ int main(int argc, char * argv[])
 
 	//try to make health hearts
 	//make health red
-	//consider highlighting all the players info on their turn
 
 	//Bugs
 
