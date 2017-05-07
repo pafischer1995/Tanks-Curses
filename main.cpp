@@ -163,7 +163,19 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 
 	Sleep(1200);
 
-	
+	/*
+	//large bomb (does 2 damage)
+	if (players[turn].bomb_type == 1)
+	{
+
+	}
+
+	//strong bomb (bigger radius)
+	if (players[turn].bomb_type == 2)
+	{
+
+	}
+	*/
 
 	//if bomb is within 1 column in either direction of player 1 or on the column
 	if (bih == players[0].col || bih == players[0].col + 1 || bih == players[0].col - 1)
@@ -287,7 +299,7 @@ void Credits()
 	{
 		// (up and down, left and right)
 		stringstream ss;
-		ss << "Game written and developed by Paul A. Fischer and Donald Jervis.";
+		ss << "Game written and developed by Paul A. Fischer.";
 		move(LINES / 2 - 4, 38);
 		addstr(ss.str().c_str());
 
@@ -297,7 +309,7 @@ void Credits()
 		addstr(ss.str().c_str());
 
 		ss = stringstream();
-		ss << "pfischer@carthage.edu, djervis@carthage.edu";
+		ss << "pfischer@carthage.edu";
 		move(LINES / 2, COLS / 2 - 11);
 		addstr(ss.str().c_str());
 
@@ -610,7 +622,7 @@ void Settings(Player & players)
 			}
 			if (health_toggle == 5)
 			{
-				health_toggle = 0;
+				health_toggle = 1;
 				break;
 			}
 
@@ -771,8 +783,8 @@ void Pointshop(Ground & g, Player * players, int turn)
 				if (players[turn].bomb_type != 0)
 				{
 					ss = stringstream();
-					ss << "A bomb is already equpped. ";
-					move(14, COLS / 2 - 15);
+					ss << "A bomb is already equpped.";
+					move(14, COLS / 2 - 14);
 					addstr(ss.str().c_str());
 					refresh();
 					Sleep(2000);
@@ -870,7 +882,7 @@ void Pointshop(Ground & g, Player * players, int turn)
 				{
 					ss = stringstream();
 					ss << "At max health.";
-					move(14, COLS / 2 - 15);
+					move(14, COLS / 2 - 14);
 					addstr(ss.str().c_str());
 					refresh();
 					Sleep(2000);
@@ -907,7 +919,7 @@ void Pointshop(Ground & g, Player * players, int turn)
 				{
 					ss = stringstream();
 					ss << "Petrol Full.";
-					move(14, COLS / 2 - 15);
+					move(14, COLS / 2 - 14);
 					addstr(ss.str().c_str());
 					refresh();
 					Sleep(2000);
@@ -934,6 +946,8 @@ void Pointshop(Ground & g, Player * players, int turn)
 					ss << "- 25" << credit << "'s.";
 					move(14, COLS / 2 - 14);
 					addstr(ss.str().c_str());
+					refresh();
+					Sleep(1500);
 
 					erase();
 					DrawScreen(g, players, turn);
