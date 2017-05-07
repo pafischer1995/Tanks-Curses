@@ -212,7 +212,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 
 	stringstream ss;
 	ss << "#";
-	move(biv , bih);
+	move(biv, bih + 1);
 	addstr(ss.str().c_str());
 	refresh();
 
@@ -226,7 +226,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	if (players[turn].bomb_type == 0)
 	{
 		//if bomb is within 1 column in either direction of player 1
-		if (bih == players[0].col || bih == players[0].col + 1 || bih == players[0].col - 1)
+		if (bih == players[0].col || bih == players[0].col + 1 || bih == players[0].col + 2)
 		{
 			//if bomb is within 1 row in either direction of player 1
 			if (biv == players[0].line || biv == players[0].line + 1 || biv == players[0].line - 1)
@@ -237,7 +237,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 		}
 
 		//if bomb is within 1 column in either direction of player 2
-		if (bih == players[1].col || bih == players[1].col + 1 || bih == players[1].col - 1)
+		if (bih == players[1].col || bih == players[1].col + 1 || bih == players[1].col + 2)
 		{
 			if (biv == players[1].line || biv == players[1].line + 1 || biv == players[1].line - 1)
 			{
@@ -254,7 +254,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 
 	else if (players[turn].bomb_type == 1)
 	{
-		if (bih == players[0].col || bih == players[0].col + 1 || bih == players[0].col - 1)
+		if (bih == players[0].col || bih == players[0].col + 1 || bih == players[0].col + 2)
 		{
 			if (biv == players[0].line || biv == players[0].line + 1 || biv == players[0].line - 1)
 			{
@@ -264,7 +264,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 		}
 
 		//if bomb is within 1 column in either direction of player 2
-		if (bih == players[1].col || bih == players[1].col + 1 || bih == players[1].col - 1)
+		if (bih == players[1].col || bih == players[1].col + 1 || bih == players[1].col + 2)
 		{
 			if (biv == players[1].line || biv == players[1].line + 1 || biv == players[1].line - 1)
 			{
@@ -282,7 +282,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 
 	else if (players[turn].bomb_type == 2)
 	{
-		if (bih == players[0].col || bih == players[0].col + 1 || bih == players[0].col + 2 || bih == players[0].col - 1 || bih == players[0].col - 2)
+		if (bih == players[0].col || bih == players[0].col + 1 || bih == players[0].col + 2 || bih == players[0].col - 1 || bih == players[0].col + 3)
 		{
 			if (biv == players[0].line || biv == players[0].line + 1 || biv == players[0].line + 2 || biv == players[0].line - 1 || biv == players[0].line - 2)
 			{
@@ -292,7 +292,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 		}
 
 		//if bomb is within 1 column in either direction of player 2
-		if (bih == players[1].col || bih == players[1].col + 1 || bih == players[1].col + 2 || bih == players[1].col - 1 || bih == players[1].col - 2)
+		if (bih == players[1].col || bih == players[1].col + 1 || bih == players[1].col + 2 || bih == players[1].col - 1 || bih == players[1].col + 3)
 		{
 			if (biv == players[1].line || biv == players[1].line + 1 || biv == players[1].line + 2 || biv == players[1].line - 1 || biv == players[1].line - 2)
 			{
