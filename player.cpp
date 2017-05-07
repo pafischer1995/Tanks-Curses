@@ -44,6 +44,9 @@ void Player::Draw(Ground & g)
 	init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
 	init_pair(6, COLOR_CYAN, COLOR_BLACK);
 	init_pair(7, COLOR_WHITE, COLOR_BLACK);
+	init_pair(8, COLOR_BLACK, COLOR_WHITE);
+	init_pair(9, COLOR_BLACK, COLOR_RED);
+	init_pair(10, COLOR_BLACK, COLOR_GREEN);
 
 	attron(COLOR_PAIR(color));
 
@@ -142,6 +145,15 @@ void Player::DrawSettings(int turn)
 	addstr(ss.str().c_str());
 
 
+	int color = (bomb_type + 8);
+	char square = 'o';
+	
+	attron(COLOR_PAIR(color));
+	ss = stringstream();
+	ss << square;
+	mvaddstr(4, starting_column + 10, ss.str().c_str());
+	attroff(COLOR_PAIR(color));
+	
 
 	attron(COLOR_PAIR(1));
 	ss = stringstream();

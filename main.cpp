@@ -77,7 +77,10 @@ void DrawScreen(Ground & g, Player * players, int turn)
 
 void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 {
-
+	start_color();
+	init_pair(0, COLOR_WHITE, COLOR_BLACK);
+	init_pair(1, COLOR_RED, COLOR_BLACK);
+	init_pair(2, COLOR_GREEN, COLOR_BLACK);
 
 	double angle = players[turn].angle / 180.0 * PI;
 	//vertical
@@ -85,7 +88,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	//horizontal
 	double x_component = cos(angle) * players[turn].power * 0.2;
 
-	double pNx;		
+	double pNx;
 	double pNy;
 
 	//flips the bullet if it's the player on the other side of the screen
@@ -116,29 +119,34 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 		}
 
 		//if bullet goes off the screen at the bottom
-			if (pNy >= lines - 2)
+		if (pNy >= lines - 2)
 			break;
-		
-		//if the bullet is in the ground then break
-			if (pNy >= g.ground.at((int)pNx))
-			{
-				g.ground.at((int)pNx)++;
-				g.ground.at((int)pNx - 1)++;
-				g.ground.at((int)pNx + 1)++;
-				break;
-			}
 
+		//if the bullet is in the ground then break
+		if (pNy >= g.ground.at((int)pNx))
+		{
+			g.ground.at((int)pNx)++;
+			g.ground.at((int)pNx - 1)++;
+			g.ground.at((int)pNx + 1)++;
+			break;
+		}
+
+	
 		//this makes the bullet only one
 		erase();
 		DrawScreen(g, players, turn);
 		move((int)pNy - 1, (int)pNx + 1);
+
+		attron(COLOR_PAIR(players[turn].bomb_type));
+		//make bomb the color of the bombtype
 		addch(ACS_BULLET);
 
+		attroff(COLOR_PAIR(players[turn].bomb_type));
 
 		refresh();
 		Sleep(50);
 	}
-	
+
 	bih = pNx + 1;
 	biv = pNy - 1;
 
@@ -155,57 +163,115 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	addstr(ss.str().c_str());
 	refresh();
 
+	attron(COLOR_PAIR(players[turn].bomb_type));
+
 	ss = stringstream();
 	ss << "#";
-	move(biv,bih);
+	move(biv, bih);
 	addstr(ss.str().c_str());
 	refresh();
 
+	attroff(COLOR_PAIR(players[turn].bomb_type));
+
 	Sleep(1200);
 
-	/*
-	//large bomb (does 2 damage)
-	if (players[turn].bomb_type == 1)
+/////////////////////////////////////////BOMB_TYPE_0//////////////////////////////////////////////
+		//regular bomb bomb_type == 0
+		//this does a regular bomb
+	if (players[turn].bomb_type == 0)
 	{
-
-	}
-
-	//strong bomb (bigger radius)
-	if (players[turn].bomb_type == 2)
-	{
-
-	}
-	*/
-
-	//if bomb is within 1 column in either direction of player 1 or on the column
-	if (bih == players[0].col || bih == players[0].col + 1 || bih == players[0].col - 1)
-	{
-		if (biv == players[0].line || biv == players[0].line + 1 || biv == players[0].line - 1)
+		//if bomb is within 1 column in either direction of player 1
+		if (bih == players[0].col || bih == players[0].col + 1 || bih == players[0].col - 1)
 		{
-			players[1].points = players[0].points + 25;
-			players[0].health--;
+			//if bomb is within 1 row in either direction of player 1
+			if (biv == players[0].line || biv == players[0].line + 1 || biv == players[0].line - 1)
+			{
+				players[1].points = players[1].points + 25;
+				players[0].health--;
+			}
 		}
-	}
 
-	//if bomb is within 1 column in either direction of player 2
-	if (bih == players[1].col || bih == players[1].col + 1 || bih == players[1].col - 1)
-	{
-		if (biv == players[1].line || biv == players[1].line + 1 || biv == players[1].line - 1)
+		//if bomb is within 1 column in either direction of player 2
+		if (bih == players[1].col || bih == players[1].col + 1 || bih == players[1].col - 1)
 		{
-			players[0].points = players[1].points + 25;
-			players[1].health--;
+			if (biv == players[1].line || biv == players[1].line + 1 || biv == players[1].line - 1)
+			{
+				players[0].points = players[0].points + 25;
+				players[1].health--;
+			}
 		}
+		players[turn].bomb_type = 0;
 	}
 
+/////////////////////////////////////////BOMB_TYPE_1//////////////////////////////////////////////
+	//if bomb is within 2 columns to the left or right, or 2 rows up or down
+	//this does twice the damage
 
-	//win check
-	if (players[0].health == 0)
+	else if (players[turn].bomb_type == 1)
+	{
+		if (bih == players[0].col || bih == players[0].col + 1 || bih == players[0].col - 1)
+		{
+			if (biv == players[0].line || biv == players[0].line + 1 || biv == players[0].line - 1)
+			{
+				players[1].points = players[1].points + 50;
+				players[0].health = players[0].health - 2;
+			}
+		}
+
+		//if bomb is within 1 column in either direction of player 2
+		if (bih == players[1].col || bih == players[1].col + 1 || bih == players[1].col - 1)
+		{
+			if (biv == players[1].line || biv == players[1].line + 1 || biv == players[1].line - 1)
+			{
+				players[0].points = players[0].points + 50;
+				players[1].health = players[1].health - 2;
+			}
+		}
+		players[turn].bomb_type = 0;
+	}
+
+/////////////////////////////////////////BOMB_TYPE_2//////////////////////////////////////////////
+	//large bomb bomb (bigger radius) = 2
+
+	else if (players[turn].bomb_type == 2)
+	{
+		if (bih == players[0].col || bih == players[0].col + 1 || bih == players[0].col + 2 || bih == players[0].col - 1 || bih == players[0].col - 2)
+		{
+			if (biv == players[0].line || biv == players[0].line + 1 || biv == players[0].line + 2 || biv == players[0].line - 1 || biv == players[0].line - 2)
+			{
+				players[1].points = players[1].points + 25;
+				players[0].health--;
+			}
+		}
+
+		//if bomb is within 1 column in either direction of player 2
+		if (bih == players[1].col || bih == players[1].col + 1 || bih == players[1].col + 2 || bih == players[1].col - 1 || bih == players[1].col - 2)
+		{
+			if (biv == players[1].line || biv == players[1].line + 1 || biv == players[1].line + 2 || biv == players[1].line - 1 || biv == players[1].line - 2)
+			{
+				players[0].points = players[0].points + 25;
+				players[1].health--;
+			}
+		}
+		players[turn].bomb_type = 0;
+	}
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+		//win check
+	if (players[0].health == 0 || players[0].health < 0)
 	{
 		players[1].win_check = true;
 	}
 
-	if (players[1].health == 0)
+	else if (players[1].health == 0 || players[1].health < 0)
 	{
+		players[0].win_check = true;
+	}
+
+	//if both players die in teh same turn it is a draw
+	else if (players[0].health <= 0 && players[1].health <= 0)
+	{
+		players[1].win_check = true;
 		players[0].win_check = true;
 	}
 }
@@ -1310,7 +1376,7 @@ int main(int argc, char * argv[])
 					players[0].points = players[0].points + 50;
 				}
 
-				if (players[1].win_check == true)
+				else if (players[1].win_check == true)
 				{
 					if (nickname_check_two == true)
 					{
@@ -1323,6 +1389,17 @@ int main(int argc, char * argv[])
 
 					keep_going = false;
 					players[1].points = players[1].points + 50;
+				}
+
+				//if both die in same turn
+				else if (players[1].win_check == true && players[2].win_check == true)
+				{
+					
+						w = "Draw";
+
+					keep_going = false;
+					players[1].points + 50;
+					players[0].points + 50;
 				}
 
 				p1s = players[0].points;
@@ -1380,7 +1457,8 @@ int main(int argc, char * argv[])
 	
 
 	//try to make health hearts
-	//make health red
+	//changes log
+	//finish the two bomb types
 
 	//Bugs
 
@@ -1395,20 +1473,10 @@ int main(int argc, char * argv[])
 	//if the ground doesn't have an icon make it so you can't move past it
 	//- wind
 	//-different terrains in the settings (as is is medium. flat is 1, high elevation is 3
-	//-point shop
-	//	+1 health
-	//	petrol canister
-	//	big bomb
-	//	strong bomb
+	//fill ground
+	//	big bomb - almost done
+	//	strong bomb - almost done
 	//make a ascii robot thing that welcomes player to pointshop, they can say sorry you don't have credits, or maybe a random line about purchasing the thing they bought
 
-
-	/*
-	//fill ground with ASCII Table below, or ACS_CKBOARD
-	Possibly populate ground with these (depending on density maybe?)
-	ASCII code 176 = ░ ( Graphic character, low density dotted )
-	ASCII code 177 = ▒ ( Graphic character, medium density dotted )
-	ASCII code 178 = ▓ ( Graphic character, high density dotted )
-	*/
 }
 
