@@ -11,6 +11,8 @@ extern int lines;
 extern int cols;
 extern int base_height_divisor;
 extern int max_height_divisor;
+extern int ground_type;
+extern bool show;
 
 const int Player::power_increment = 1;
 const double Player::angle_increment = 1;
@@ -21,8 +23,8 @@ Player::Player()
 	s = LEFT;
 	col = 0;
 	line = 0;
-	angle = 35.0;
-	power = 50.0;
+	angle = 35.0;	//35
+	power = 50.0;	//50
 	win_check = false;
 }
 
@@ -54,7 +56,6 @@ void Player::Draw(Ground & g)
 
 	attroff(COLOR_PAIR(color));
 
-	//in case there is ever a situation where land is floating above, or they hit the land below, they don't die for being in same column
 	line = g.ground.at(col) - 1;
 }
 
@@ -144,6 +145,38 @@ void Player::DrawSettings(int turn)
 	move(4, COLS / 2 - 7);
 	addstr(ss.str().c_str());
 
+	if (show == true)
+	{
+		stringstream ss;
+		ss = stringstream();
+		ss << "Show On";
+		move(LINES - 1, COLS -8);
+		addstr(ss.str().c_str());
+
+
+		ss = stringstream();
+		ss << "ground_type " << ground_type;
+		move(0, COLS / 2 - 7);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "bomb_type: " << bomb_type;
+		move(1, COLS / 2 - 7);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "COL:" << setw(2) << "00";
+		move(LINES - 1, COLS / 2 - 6);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "LINE:" << setw(2) << "00";
+		move(LINES - 1, COLS / 2 + 1);
+		addstr(ss.str().c_str());
+		refresh();
+	}
+	
+	
 
 	int color = (bomb_type + 8);
 	char square = 'o';

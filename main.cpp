@@ -3,11 +3,12 @@
 //Final Project, 4/27/17-5/9/17
 //Tanks
 
-
 // (up and down, left and right)
 //stringstream cannot use curses/ncurses operations
 //use stringstream for c++
 //use addch and char* for ncurses
+//game is 40 lines
+//game is 120 cols
 
 #include <iostream>
 #include <sstream>
@@ -45,11 +46,13 @@ char temp_nickname_one[24];
 bool nickname_check_one = false;
 char temp_nickname_two[24];
 bool nickname_check_two = false;
+bool destroy = false;
 
 int p1s = 0;						//player 1 score storage
 int p2s = 0;						//player 2 score storage
 int ground_type = 2;
 bool wind_change = false;
+bool show = false;						//show debugging stuff
 
 const double PI = 3.141592653589793238463;
 
@@ -122,15 +125,14 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 		}
 
 		//if bullet goes off the screen at the bottom
-		if (pNy >= lines - 2)
-			break;
+		//if (pNy >= lines - 2)
+		//break;
 
 		//if the bullet is in the ground then break
+		//giving the ground error. if it's off the screen or on the last one it cannot break the ground off the screen
 		if (pNy >= g.ground.at((int)pNx))
 		{
-			g.ground.at((int)pNx)++;
-			g.ground.at((int)pNx - 1)++;
-			g.ground.at((int)pNx + 1)++;
+			destroy = true;
 			break;
 		}
 
@@ -138,6 +140,22 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 		//this makes the bullet only one
 		erase();
 		DrawScreen(g, players, turn);
+
+		if (show == true)
+		{
+			stringstream ss;
+			ss = stringstream();
+			ss << pNx;
+			move(LINES - 1, COLS / 2 - 2);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << pNy;
+			move(LINES - 1, COLS / 2 + 6);
+			addstr(ss.str().c_str());
+			refresh();
+		}
+
 		move((int)pNy - 1, (int)pNx + 1);
 
 		attron(COLOR_PAIR(players[turn].bomb_type));
@@ -150,27 +168,51 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 		Sleep(50);
 	}
 
-	bih = pNx + 1;
+	//h is up and down
+	//v is left and right
+	bih = pNx;
 	biv = pNy - 1;
 
-	stringstream ss;
-	ss = stringstream();
-	ss << "col: " << bih;
-	move(1, COLS / 2 - 3);
-	addstr(ss.str().c_str());
-	refresh();
+	if (destroy == true)
+	{//if it's in the range of the game
+		if (biv > 1 || biv < COLS - 2)
+		{
+			g.ground.at(bih)++;
+		}
 
-	ss = stringstream();
-	ss << "line: " << biv;
-	move(2, COLS / 2 - 3);
-	addstr(ss.str().c_str());
-	refresh();
+		//if it's on screen and there is at least one more space
+		if (biv > 2)
+		{
+			g.ground.at(bih - 1)++;
+		}
+		//if it's on screen and there is at least one more space
+		if (biv < COLS - 2)
+		{
+			g.ground.at(bih + 1)++;
+		}
+
+		//if it's a large bomb- radius is bigger
+		if (players[turn].bomb_type == 2)
+		{
+			if (biv > 3)
+			{
+				g.ground.at(bih - 2)++;
+			}
+			if (biv < COLS - 3)
+			{
+				g.ground.at(bih + 2)++;
+			}
+		}
+		destroy = false;
+	}
+	
+
 
 	attron(COLOR_PAIR(players[turn].bomb_type));
 
-	ss = stringstream();
+	stringstream ss;
 	ss << "#";
-	move(biv, bih);
+	move(biv , bih);
 	addstr(ss.str().c_str());
 	refresh();
 
@@ -207,7 +249,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	}
 
 /////////////////////////////////////////BOMB_TYPE_1//////////////////////////////////////////////
-	//if bomb is within 2 columns to the left or right, or 2 rows up or down
+
 	//this does twice the damage
 
 	else if (players[turn].bomb_type == 1)
@@ -234,6 +276,8 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	}
 
 /////////////////////////////////////////BOMB_TYPE_2//////////////////////////////////////////////
+	
+	//if bomb is within 2 columns to the left or right, or 2 rows up or down
 	//large bomb bomb (bigger radius) = 2
 
 	else if (players[turn].bomb_type == 2)
@@ -671,14 +715,14 @@ void Settings(Player & players)
 		if (wind_change == true)
 		{
 			ss = stringstream();
-			ss << setw(10) << right << "(W) Toggle Wind: \t\t    <True>          False ";
+			ss << setw(10) << right << "(W) Toggle Wind: \t\t    <True>         False ";
 			move(23, 9);
 			addstr(ss.str().c_str());
 		}
 		else if (wind_change == false)
 		{
 			ss = stringstream();
-			ss << setw(10) << right << "(W) Toggle Wind: \t\t     True          <False>";
+			ss << setw(10) << right << "(W) Toggle Wind: \t\t     True         <False>";
 			move(23, 9);
 			addstr(ss.str().c_str());
 		}
@@ -939,7 +983,7 @@ void Pointshop(Ground & g, Player * players, int turn)
 					move(14, COLS / 2 - 14);
 					addstr(ss.str().c_str());
 					refresh();
-					Sleep(2000);
+					Sleep(1500);
 					break;
 				}
 
@@ -950,7 +994,7 @@ void Pointshop(Ground & g, Player * players, int turn)
 					move(14, COLS / 2 - 14);
 					addstr(ss.str().c_str());
 					refresh();
-					Sleep(1500);
+					Sleep(1200);
 					break;
 				}
 
@@ -964,7 +1008,7 @@ void Pointshop(Ground & g, Player * players, int turn)
 					players[turn].points = players[turn].points - 75;
 					players[turn].bomb_type = 2;
 					refresh();
-					Sleep(1500);
+					Sleep(1200);
 					break;
 				}
 			}
@@ -983,7 +1027,7 @@ void Pointshop(Ground & g, Player * players, int turn)
 					move(14, COLS / 2 - 14);
 					addstr(ss.str().c_str());
 					refresh();
-					Sleep(2000);
+					Sleep(1500);
 					break;
 				}
 
@@ -994,7 +1038,7 @@ void Pointshop(Ground & g, Player * players, int turn)
 					move(14, COLS / 2 - 14);
 					addstr(ss.str().c_str());
 					refresh();
-					Sleep(1500);
+					Sleep(1200);
 					break;
 				}
 
@@ -1005,7 +1049,7 @@ void Pointshop(Ground & g, Player * players, int turn)
 					move(14, COLS / 2 - 14);
 					addstr(ss.str().c_str());
 					refresh();
-					Sleep(1500);
+					Sleep(1200);
 
 					players[turn].points = players[turn].points - 75;
 					players[turn].bomb_type = 1;
@@ -1026,7 +1070,7 @@ void Pointshop(Ground & g, Player * players, int turn)
 					move(14, COLS / 2 - 14);
 					addstr(ss.str().c_str());
 					refresh();
-					Sleep(1500);
+					Sleep(1200);
 					break;
 				}
 
@@ -1037,7 +1081,7 @@ void Pointshop(Ground & g, Player * players, int turn)
 					move(14, COLS / 2 - 14);
 					addstr(ss.str().c_str());
 					refresh();
-					Sleep(2000);
+					Sleep(1500);
 					break;
 				}
 
@@ -1049,7 +1093,7 @@ void Pointshop(Ground & g, Player * players, int turn)
 					move(14, COLS / 2 - 14);
 					addstr(ss.str().c_str());
 					refresh();
-					Sleep(1500);
+					Sleep(1200);
 
 					players[turn].points = players[turn].points - 50;
 					players[turn].health++;
@@ -1074,7 +1118,7 @@ void Pointshop(Ground & g, Player * players, int turn)
 					move(14, COLS / 2 - 14);
 					addstr(ss.str().c_str());
 					refresh();
-					Sleep(2000);
+					Sleep(1500);
 					break;
 				}
 
@@ -1085,7 +1129,7 @@ void Pointshop(Ground & g, Player * players, int turn)
 					move(14, COLS / 2 - 14);
 					addstr(ss.str().c_str());
 					refresh();
-					Sleep(1500);
+					Sleep(1200);
 					break;
 				}
 
@@ -1099,7 +1143,7 @@ void Pointshop(Ground & g, Player * players, int turn)
 					move(14, COLS / 2 - 14);
 					addstr(ss.str().c_str());
 					refresh();
-					Sleep(1500);
+					Sleep(1200);
 
 					erase();
 					DrawScreen(g, players, turn);
@@ -1482,6 +1526,11 @@ int main(int argc, char * argv[])
 					break;
 				}
 
+				case 's':
+				case 'S':
+					show = !show;
+					break;
+
 				case 'q':
 				case 'Q':
 					keep_going = false;
@@ -1599,16 +1648,16 @@ int main(int argc, char * argv[])
 	
 
 	//try to make health hearts
-	//changes log
+	//add to log
+	//make large bomb do more land damage
 
 	//Bugs
 
 	//-fix flash that occurs during 'play'
-	//-ground doesn't take damage after a certain column
+	//-ground doesn't take damage after a certain line down
 	//-bug where it has to have main menu x2 times to get a fresh map (this is due to the DrawScreen function)
 	//-game crashed once when bomb went off screen at the very bottom right corner, didn't hit ground
-	//-first ground is still wrong
-	//-see if you can clear nickname after assigning it, that way if you change it in the settings it shows nothing, not previous name
+	//-first ground is still wrong occasionally
 
 	//extra credit Ideas
 
