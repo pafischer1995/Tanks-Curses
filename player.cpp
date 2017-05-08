@@ -153,8 +153,8 @@ void Player::DrawSettings(int turn)
 		if (wind_level == 1)
 		{
 			ss = stringstream();
-			ss << "< < <";
-			move(2, COLS / 2 - 3);
+			ss << "<";
+			move(2, COLS / 2 - 1);
 			addstr(ss.str().c_str());
 		}
 		else if (wind_level == 2)
@@ -168,16 +168,16 @@ void Player::DrawSettings(int turn)
 		else if (wind_level == 3)
 		{
 			ss = stringstream();
-			ss << "<";
-			move(2, COLS / 2 -1);
+			ss << "< < <";
+			move(2, COLS / 2 - 3);
 			addstr(ss.str().c_str());
 		}
 
 		else if (wind_level == 4)
 		{
 			ss = stringstream();
-			ss << "> > >";
-			move(2, COLS / 2 - 3);
+			ss << ">";
+			move(2, COLS / 2 - 1);
 			addstr(ss.str().c_str());
 		}
 		else if (wind_level == 5)
@@ -191,8 +191,8 @@ void Player::DrawSettings(int turn)
 		else if (wind_level == 6)
 		{
 			ss = stringstream();
-			ss << ">";
-			move(2, COLS / 2 - 1);
+			ss << "> > >";
+			move(2, COLS / 2 - 3);
 			addstr(ss.str().c_str());
 		}
 	}
@@ -204,39 +204,6 @@ void Player::DrawSettings(int turn)
 		addstr(ss.str().c_str());
 	}
 
-
-	if (show == true)
-	{
-		stringstream ss;
-		ss = stringstream();
-		ss << "Show On";
-		move(LINES - 1, COLS -8);
-		addstr(ss.str().c_str());
-
-
-		ss = stringstream();
-		ss << "ground_type " << ground_type;
-		move(0, COLS / 2 - 7);
-		addstr(ss.str().c_str());
-
-		ss = stringstream();
-		ss << "bomb_type: " << bomb_type;
-		move(1, COLS / 2 - 7);
-		addstr(ss.str().c_str());
-
-		ss = stringstream();
-		ss << "COL:" << setw(2) << "00";
-		move(LINES - 1, COLS / 2 - 6);
-		addstr(ss.str().c_str());
-
-		ss = stringstream();
-		ss << "LINE:" << setw(2) << "00";
-		move(LINES - 1, COLS / 2 + 1);
-		addstr(ss.str().c_str());
-		refresh();
-	}
-	
-	
 
 	int color = (bomb_type + 8);
 	char square = 'o';
@@ -274,4 +241,43 @@ void Player::DrawSettings(int turn)
 		mvaddstr(line, starting_column, ss.str().c_str());
 	}
 
+	if (show == true)
+	{
+		stringstream ss;
+		ss = stringstream();
+		ss << "Show On";
+		move(LINES - 1, COLS - 8);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "ground_type " << ground_type;
+		move(0, COLS / 2 - 7);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "bomb_type: " << bomb_type;
+		move(0, COLS / 2 - 22);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "COL:" << setw(2) << "00";
+		move(LINES - 1, COLS / 2 - 6);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "LINE:" << setw(2) << "00";
+		move(LINES - 1, COLS / 2 + 1);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "Turn[" << turn << "] Wind Strength [0.000]";
+		move(0, COLS / 2 + 9);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << ws;
+		move(0, COLS / 2 + 32);
+		addstr(ss.str().c_str());
+		refresh();
+	}
 }

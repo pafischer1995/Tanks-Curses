@@ -182,22 +182,48 @@ void Wind()
 
 void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 {	
-	double ws = 0.0; //wind strength
+	players[turn].ws = 0.0; //resets it
 
+					 //			no wind
 	if (wind_level == 0)
-		ws = .02;
-	else if (wind_level == 1)
-		ws = .02;
-	else if (wind_level == 2)
-		ws = .02;
-	else if (wind_level == 3)
-		ws = .02;
-	else if (wind_level == 4)
-		ws = .02;
-	else if (wind_level == 5)
-		ws = .02;
-	else if (wind_level == 6)
-		ws = .02;
+		players[turn].ws = .200;
+
+	if (players[turn].s == LEFT)					// >>> then the wind goes with shot if facing right, against if facing left
+	{
+		//			<<<
+		if (wind_level == 1)			//low left
+			players[0].ws = 0.180;
+		else if (wind_level == 2)		//medium left
+			players[0].ws = 0.155;
+		else if (wind_level == 3)		//high left
+			players[0].ws = 0.125;
+		//			>>>
+		if (wind_level == 4)			//low right
+			players[0].ws = 0.220;
+		else if (wind_level == 5)		//medium right
+			players[0].ws = 0.235;
+		else if (wind_level == 6)		//high right
+			players[0].ws = 0.275;
+	}
+
+	else if (players[turn].s == RIGHT)				// >>> then the wind goes with shot if facing left, against if facing right
+	{
+		//			<<<
+		if (wind_level == 1)			//low left
+			players[1].ws = 0.220;
+		else if (wind_level == 2)		//medium left
+			players[1].ws = 0.235;
+		else if (wind_level == 3)		//high left
+			players[1].ws = 0.275;
+		//			>>>
+		if (wind_level == 4)			//low right
+			players[1].ws = 0.180;
+		else if (wind_level == 5)		//medium right
+			players[1].ws = 0.155;
+		else if (wind_level == 6)		//high right
+			players[1].ws = 0.125;
+	}
+
 
 	start_color();
 	init_pair(0, COLOR_WHITE, COLOR_BLACK);
@@ -212,10 +238,11 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	//double x_component = cos(angle) * players[turn].power * 0.2;
 
 	//vertical
-	double y_component = (sin(angle) * players[turn].power * 0.2); //* wc;
+	double y_component = (sin(angle) * players[turn].power * 0.2);
 	//horizontal
-		double x_component = (cos(angle) * players[turn].power * 0.2); //* wc;
+	double x_component = (cos(angle) * players[turn].power * players[turn].ws);
 
+		//creating 2 new doubles, 
 	double pNx;
 	double pNy;
 
@@ -232,9 +259,11 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 
 	for (int i = 1; i < 5000; i++)
 	{
-		double di = i / 5.0;
+		double di = i / 5.0;																					//<< double di has to do with the speed of the bullet
 
+		//new position of the bomb = old position of the bomb + di times the formula for that players shot
 		pNx = (int)(p0x + di * x_component);
+		//this is the speed of the bullet depending on what line it is at
 		pNy = p0y + di * y_component + (di * di + di) * -0.98 / 2.0;
 		pNy = (int)(lines - pNy);
 		//if it goes too far left or too far right this ends the turn
@@ -1789,14 +1818,13 @@ int main(int argc, char * argv[])
 	//Bugs
 
 	//-fix flash that occurs during 'play'
-	//-ground doesn't take damage after a certain line down
 	//-bug where it has to have main menu x2 times to get a fresh map (this is due to the DrawScreen function)
 	//-first ground is still wrong occasionally
+
 
 	//extra credit Ideas
 
 	//if the ground doesn't have an icon make it so you can't move past it
-	//- wind
 	//fill ground
 	//make a ascii robot thing that welcomes player to pointshop, they can say sorry you don't have credits, or maybe a random line about purchasing the thing they bought
 
