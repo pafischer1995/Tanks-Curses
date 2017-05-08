@@ -20,7 +20,6 @@
 #include <locale.h>
 #include <conio.h>
 
-
 #if defined(WIN32)
 #include "curses.h"
 #include "ground.hpp"
@@ -47,6 +46,7 @@ bool nickname_check_one = false;
 char temp_nickname_two[24];
 bool nickname_check_two = false;
 bool destroy = false;
+bool land = false;
 
 int p1s = 0;						//player 1 score storage
 int p2s = 0;						//player 2 score storage
@@ -131,47 +131,47 @@ void Wind()
 			first_turn = false;
 		}
 
-			else if (wc2c > 3)
+		else if (wc2c > 3)
+		{
+			int r = rand() % 6;
+			//low wind left
+			if (r == 0)
 			{
-				int r = rand() % 6;
-				//low wind left
-				if (r == 0)
-				{
-					wind_level = 1;
-				}
+				wind_level = 1;
+			}
 
-				//medium wind left 
-				else if (r == 1)
-				{
-					wind_level = 2;
-				}
+			//medium wind left 
+			else if (r == 1)
+			{
+				wind_level = 2;
+			}
 
-				//strong wind left
-				else if (r == 2)
-				{
-					wind_level = 3;
-				}
+			//strong wind left
+			else if (r == 2)
+			{
+				wind_level = 3;
+			}
 
-				//low wind right
-				else if (r == 3)
-				{
-					wind_level = 4;
-				}
+			//low wind right
+			else if (r == 3)
+			{
+				wind_level = 4;
+			}
 
-				//medium wind tight
-				else if (r == 4)
-				{
-					wind_level = 5;
-				}
+			//medium wind tight
+			else if (r == 4)
+			{
+				wind_level = 5;
+			}
 
-				//strong wind right
-				else if (r == 5)
-				{
-					wind_level = 6;
-				}
+			//strong wind right
+			else if (r == 5)
+			{
+				wind_level = 6;
 			}
 		}
-	
+	}
+
 	else
 	{
 		//else wind is false and default of .2 is shown
@@ -181,10 +181,11 @@ void Wind()
 
 
 void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
-{	
+{
+
 	players[turn].ws = 0.0; //resets it
 
-					 //			no wind
+							//			no wind
 	if (wind_level == 0)
 		players[turn].ws = .200;
 
@@ -242,7 +243,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	//horizontal
 	double x_component = (cos(angle) * players[turn].power * players[turn].ws);
 
-		//creating 2 new doubles, 
+	//creating 2 new doubles, 
 	double pNx;
 	double pNy;
 
@@ -261,7 +262,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	{
 		double di = i / 5.0;																					//<< double di has to do with the speed of the bullet
 
-		//new position of the bomb = old position of the bomb + di times the formula for that players shot
+																												//new position of the bomb = old position of the bomb + di times the formula for that players shot
 		pNx = (int)(p0x + di * x_component);
 		//this is the speed of the bullet depending on what line it is at
 		pNy = p0y + di * y_component + (di * di + di) * -0.98 / 2.0;
@@ -287,7 +288,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 			break;
 		}
 
-	
+
 		//this makes the bullet only one
 		erase();
 		DrawScreen(g, players, turn);
@@ -356,8 +357,6 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 		}
 		destroy = false;
 	}
-	
-
 
 	attron(COLOR_PAIR(players[turn].bomb_type));
 
@@ -371,9 +370,9 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 
 	Sleep(1200);
 
-/////////////////////////////////////////BOMB_TYPE_0//////////////////////////////////////////////
-		//regular bomb bomb_type == 0
-		//this does a regular bomb
+	/////////////////////////////////////////BOMB_TYPE_0//////////////////////////////////////////////
+	//regular bomb bomb_type == 0
+	//this does a regular bomb
 	if (players[turn].bomb_type == 0)
 	{
 		//if bomb is within 1 column in either direction of player 1
@@ -399,7 +398,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 		players[turn].bomb_type = 0;
 	}
 
-/////////////////////////////////////////BOMB_TYPE_1//////////////////////////////////////////////
+	/////////////////////////////////////////BOMB_TYPE_1//////////////////////////////////////////////
 
 	//this does twice the damage
 
@@ -426,8 +425,8 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 		players[turn].bomb_type = 0;
 	}
 
-/////////////////////////////////////////BOMB_TYPE_2//////////////////////////////////////////////
-	
+	/////////////////////////////////////////BOMB_TYPE_2//////////////////////////////////////////////
+
 	//if bomb is within 2 columns to the left or right, or 2 rows up or down
 	//large bomb bomb (bigger radius) = 2
 
@@ -453,9 +452,9 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 		}
 		players[turn].bomb_type = 0;
 	}
-//////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////
 
-		//win check
+	//win check
 	if (players[0].health == 0 || players[0].health < 0)
 	{
 		players[1].win_check = true;
@@ -834,8 +833,8 @@ void Settings(Player & players)
 		attroff(COLOR_PAIR(6));
 		attroff(COLOR_PAIR(7));
 
-	
-	
+
+
 		if (ground_type == 1)
 		{
 			ss = stringstream();
@@ -845,7 +844,8 @@ void Settings(Player & players)
 			refresh();
 		}
 		else if (ground_type == 2)
-		{;
+		{
+			;
 			ss = stringstream();
 			ss << setw(10) << right << "(T) Toggle Terrain Type: \t     Low          <Medium>         High ";
 			move(21, 9);
@@ -877,7 +877,7 @@ void Settings(Player & players)
 			move(23, 9);
 			addstr(ss.str().c_str());
 		}
-		
+
 
 		ss = stringstream();
 		ss << setw(10) << right << "(H) Starting Health \t<" << health_toggle << ">";
@@ -948,7 +948,7 @@ void Settings(Player & players)
 			}
 		}
 
-			//terrain toggle
+		//terrain toggle
 		case 't':
 		case 'T':
 		{
@@ -964,7 +964,7 @@ void Settings(Player & players)
 			}
 		}
 
-			//p1 nickname
+		//p1 nickname
 		case '1':
 		{
 			if (nickname_check_one == true)
@@ -974,26 +974,26 @@ void Settings(Player & players)
 				move(7, 32);
 				addstr(ss.str().c_str());
 				refresh();
-				
-			}
-				curs_set(1);
-				echo();
-				move(7, 32);
-				getstr(temp_nickname_one);
-				refresh();
-				nickname_check_one = true;
-				break;	
-		}
-		
 
-			//p2 nickname
+			}
+			curs_set(1);
+			echo();
+			move(7, 32);
+			getstr(temp_nickname_one);
+			refresh();
+			nickname_check_one = true;
+			break;
+		}
+
+
+		//p2 nickname
 		case '2':
 		{
 			if (nickname_check_two == true)
 			{
 				stringstream ss;
 				ss << "                    ";
-				move(7, COLS /2 + 32);
+				move(7, COLS / 2 + 32);
 				addstr(ss.str().c_str());
 				refresh();
 
@@ -1008,7 +1008,7 @@ void Settings(Player & players)
 			break;
 		}
 
-			//p1 color
+		//p1 color
 		case '3':
 		{
 			if (color_toggle_one < 7)
@@ -1077,238 +1077,238 @@ void Pointshop(Ground & g, Player * players, int turn)
 		//lower right
 		mvaddch(16, COLS / 2 + 12, ACS_LRCORNER);
 		refresh();
-	
-		
 
-			ss = stringstream();
-			ss << "PointShop\t\t  ";
-			move(4, COLS / 2 - 14);
-			addstr(ss.str().c_str());
 
-			ss = stringstream();
-			ss << "(L) Large Bomb [75c]";
-			move(6, COLS / 2 - 14);
-			addstr(ss.str().c_str());
 
-			ss = stringstream();
-			ss << "(S) Strong Bomb [75c]";
-			move(8, COLS / 2 - 14);
-			addstr(ss.str().c_str());
+		ss = stringstream();
+		ss << "PointShop\t\t  ";
+		move(4, COLS / 2 - 14);
+		addstr(ss.str().c_str());
 
-			ss = stringstream();
-			ss << "(H) Health Pack [50c]";
-			move(10, COLS / 2 - 14);
-			addstr(ss.str().c_str());
+		ss = stringstream();
+		ss << "(L) Large Bomb [75c]";
+		move(6, COLS / 2 - 14);
+		addstr(ss.str().c_str());
 
-			ss = stringstream();
-			ss << "(P) Petrol Jerrycan [25c]";
-			move(12, COLS / 2 - 14);
-			addstr(ss.str().c_str());
+		ss = stringstream();
+		ss << "(S) Strong Bomb [75c]";
+		move(8, COLS / 2 - 14);
+		addstr(ss.str().c_str());
 
-			ss = stringstream();
-			ss << "(B) Back";
-			move(15, COLS / 2 + 3);
-			addstr(ss.str().c_str());
+		ss = stringstream();
+		ss << "(H) Health Pack [50c]";
+		move(10, COLS / 2 - 14);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "(P) Petrol Jerrycan [25c]";
+		move(12, COLS / 2 - 14);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "(B) Back";
+		move(15, COLS / 2 + 3);
+		addstr(ss.str().c_str());
 
 		int c = getch();
 		switch (c)
 		{
 
-			case 'b':
-			case 'B':
+		case 'b':
+		case 'B':
+		{
+			ps = false;
+			break;
+		}
+
+		//Large Bomb - make bomb radius check bigger 75
+		case 'l':
+		case 'L':
+		{
+			char credit = 128;
+
+			if (players[turn].bomb_type != 0)
 			{
-				ps = false;
+				ss = stringstream();
+				ss << "A bomb is already equpped.";
+				move(14, COLS / 2 - 14);
+				addstr(ss.str().c_str());
+				refresh();
+				Sleep(1500);
 				break;
 			}
 
-			//Large Bomb - make bomb radius check bigger 75
-			case 'l':
-			case 'L':
+			else if (players[turn].points < 75)
 			{
-				char credit = 128;
-				
-				if (players[turn].bomb_type != 0)
-				{
-					ss = stringstream();
-					ss << "A bomb is already equpped.";
-					move(14, COLS / 2 - 14);
-					addstr(ss.str().c_str());
-					refresh();
-					Sleep(1500);
-					break;
-				}
-
-				else if (players[turn].points < 75)
-				{
-					ss = stringstream();
-					ss << "Not enough " << credit << "'s.";
-					move(14, COLS / 2 - 14);
-					addstr(ss.str().c_str());
-					refresh();
-					Sleep(1200);
-					break;
-				}
-
-				else
-				{
-					ss = stringstream();
-					ss << "- 75" << credit << "'s.";
-					move(14, COLS / 2 - 14);
-					addstr(ss.str().c_str());
-
-					players[turn].points = players[turn].points - 75;
-					players[turn].bomb_type = 2;
-					refresh();
-					Sleep(1200);
-					break;
-				}
+				ss = stringstream();
+				ss << "Not enough " << credit << "'s.";
+				move(14, COLS / 2 - 14);
+				addstr(ss.str().c_str());
+				refresh();
+				Sleep(1200);
+				break;
 			}
 
-
-			//Strong Bomb - make bomb damage more 75
-			case 's':
-			case 'S':
+			else
 			{
-				char credit = 128;
+				ss = stringstream();
+				ss << "- 75" << credit << "'s.";
+				move(14, COLS / 2 - 14);
+				addstr(ss.str().c_str());
 
-				if (players[turn].bomb_type != 0)
-				{
-					ss = stringstream();
-					ss << "A bomb is already equpped.";
-					move(14, COLS / 2 - 14);
-					addstr(ss.str().c_str());
-					refresh();
-					Sleep(1500);
-					break;
-				}
+				players[turn].points = players[turn].points - 75;
+				players[turn].bomb_type = 2;
+				refresh();
+				Sleep(1200);
+				break;
+			}
+		}
 
-				else if (players[turn].points < 75)
-				{
-					ss = stringstream();
-					ss << "Not enough " << credit << "'s.";
-					move(14, COLS / 2 - 14);
-					addstr(ss.str().c_str());
-					refresh();
-					Sleep(1200);
-					break;
-				}
 
-				else
-				{
-					ss = stringstream();
-					ss << "- 75" << credit << "'s.";
-					move(14, COLS / 2 - 14);
-					addstr(ss.str().c_str());
-					refresh();
-					Sleep(1200);
+		//Strong Bomb - make bomb damage more 75
+		case 's':
+		case 'S':
+		{
+			char credit = 128;
 
-					players[turn].points = players[turn].points - 75;
-					players[turn].bomb_type = 1;
-					break;
-				}
+			if (players[turn].bomb_type != 0)
+			{
+				ss = stringstream();
+				ss << "A bomb is already equpped.";
+				move(14, COLS / 2 - 14);
+				addstr(ss.str().c_str());
+				refresh();
+				Sleep(1500);
+				break;
 			}
 
-			//Health Refill 50
-			case 'h':
-			case 'H':
+			else if (players[turn].points < 75)
 			{
-				char credit = 128;
-
-				if (players[turn].points < 50)
-				{
-					ss = stringstream();
-					ss << "Not enough " << credit << "'s.";
-					move(14, COLS / 2 - 14);
-					addstr(ss.str().c_str());
-					refresh();
-					Sleep(1200);
-					break;
-				}
-
-				else if (players[turn].health == 5)
-				{
-					ss = stringstream();
-					ss << "At max health.";
-					move(14, COLS / 2 - 14);
-					addstr(ss.str().c_str());
-					refresh();
-					Sleep(1500);
-					break;
-				}
-
-				else
-				{
-
-					ss = stringstream();
-					ss << "- 50" << credit << "'s.";
-					move(14, COLS / 2 - 14);
-					addstr(ss.str().c_str());
-					refresh();
-					Sleep(1200);
-
-					players[turn].points = players[turn].points - 50;
-					players[turn].health++;
-					erase();
-					DrawScreen(g, players, turn);
-					refresh();
-					break;
-				}
-				
+				ss = stringstream();
+				ss << "Not enough " << credit << "'s.";
+				move(14, COLS / 2 - 14);
+				addstr(ss.str().c_str());
+				refresh();
+				Sleep(1200);
+				break;
 			}
 
-			//Gasoline refill 25
-			case 'p':
-			case 'P':
+			else
 			{
-				char credit = 128;
+				ss = stringstream();
+				ss << "- 75" << credit << "'s.";
+				move(14, COLS / 2 - 14);
+				addstr(ss.str().c_str());
+				refresh();
+				Sleep(1200);
 
-				if (players[turn].gas == gas_toggle)
-				{
-					ss = stringstream();
-					ss << "Petrol Full.";
-					move(14, COLS / 2 - 14);
-					addstr(ss.str().c_str());
-					refresh();
-					Sleep(1500);
-					break;
-				}
-
-				else if (players[turn].points < 25)
-				{
-					ss = stringstream();
-					ss << "Not enough " << credit << "'s.";
-					move(14, COLS / 2 - 14);
-					addstr(ss.str().c_str());
-					refresh();
-					Sleep(1200);
-					break;
-				}
-
-				else
-				{
-					players[turn].points = players[turn].points - 25;
-					players[turn].gas = gas_toggle;
-
-					ss = stringstream();
-					ss << "- 25" << credit << "'s.";
-					move(14, COLS / 2 - 14);
-					addstr(ss.str().c_str());
-					refresh();
-					Sleep(1200);
-
-					erase();
-					DrawScreen(g, players, turn);
-					refresh();
-					break;
-				}
-
+				players[turn].points = players[turn].points - 75;
+				players[turn].bomb_type = 1;
+				break;
 			}
-			erase();
-			refresh();
-			DrawScreen(g, players, turn);
+		}
+
+		//Health Refill 50
+		case 'h':
+		case 'H':
+		{
+			char credit = 128;
+
+			if (players[turn].points < 50)
+			{
+				ss = stringstream();
+				ss << "Not enough " << credit << "'s.";
+				move(14, COLS / 2 - 14);
+				addstr(ss.str().c_str());
+				refresh();
+				Sleep(1200);
+				break;
+			}
+
+			else if (players[turn].health == 5)
+			{
+				ss = stringstream();
+				ss << "At max health.";
+				move(14, COLS / 2 - 14);
+				addstr(ss.str().c_str());
+				refresh();
+				Sleep(1500);
+				break;
+			}
+
+			else
+			{
+
+				ss = stringstream();
+				ss << "- 50" << credit << "'s.";
+				move(14, COLS / 2 - 14);
+				addstr(ss.str().c_str());
+				refresh();
+				Sleep(1200);
+
+				players[turn].points = players[turn].points - 50;
+				players[turn].health++;
+				erase();
+				DrawScreen(g, players, turn);
+				refresh();
+				break;
+			}
+
+		}
+
+		//Gasoline refill 25
+		case 'p':
+		case 'P':
+		{
+			char credit = 128;
+
+			if (players[turn].gas == gas_toggle)
+			{
+				ss = stringstream();
+				ss << "Petrol Full.";
+				move(14, COLS / 2 - 14);
+				addstr(ss.str().c_str());
+				refresh();
+				Sleep(1500);
+				break;
+			}
+
+			else if (players[turn].points < 25)
+			{
+				ss = stringstream();
+				ss << "Not enough " << credit << "'s.";
+				move(14, COLS / 2 - 14);
+				addstr(ss.str().c_str());
+				refresh();
+				Sleep(1200);
+				break;
+			}
+
+			else
+			{
+				players[turn].points = players[turn].points - 25;
+				players[turn].gas = gas_toggle;
+
+				ss = stringstream();
+				ss << "- 25" << credit << "'s.";
+				move(14, COLS / 2 - 14);
+				addstr(ss.str().c_str());
+				refresh();
+				Sleep(1200);
+
+				erase();
+				DrawScreen(g, players, turn);
+				refresh();
+				break;
+			}
+
+		}
+		erase();
+		refresh();
+		DrawScreen(g, players, turn);
 		//end of switch loop
 		}
-	//end of while loop
+		//end of while loop
 	}
 }
 
@@ -1339,7 +1339,7 @@ void Log()
 
 		stringstream ss;
 		ss << setw(10) << right << "Add Log";
-		move(LINES / 2, COLS /2);
+		move(LINES / 2, COLS / 2);
 		addstr(ss.str().c_str());
 
 		ss = stringstream();
@@ -1361,7 +1361,7 @@ void Log()
 		noecho();
 		keypad(stdscr, 1);
 		refresh();
-	
+
 	}
 }
 
@@ -1383,35 +1383,36 @@ void GameOver(string w)
 	whitespace = "\t\t\t\t\t";
 
 
-	cout << whitespace << "  ________    _____      _____  ___________ " << endl;
-	cout << whitespace << " /  _____/   /  _  \\    /     \\ \\_   _____/ " << endl;
-	cout << whitespace << "/   \\  ___  /  /_\\  \\  /  \\ /  \\ |    __)_  " << endl;
-	cout << whitespace << "\\    \\_\\  \\/    |    \\/    Y    \\|        \\ " << endl;
-	cout << whitespace << " \\______  /\\____|__  /\\____|__  /_______  / " << endl;
-	cout << whitespace << "        \\/         \\/         \\/        \\/  " << endl;
-	cout << whitespace << "____________   _________________________    " << endl;
-	cout << whitespace << "\\_____  \\   \\ /   /\\_   _____/\\______   \\   " << endl;
-	cout << whitespace << " /   |   \\   Y   /  |    __)_  |       _/   " << endl;
-	cout << whitespace << "/    |    \\     /   |        \\ |    |   \\   " << endl;
-	cout << whitespace << "\\_______  /\\___/   /_______  / |____|_  /   " << endl;
-	cout << whitespace << "        \\/                 \\/         \\/    " << endl;
-	cout << "\n" << endl;
+	std::cout << whitespace << "  ________    _____      _____  ___________ " << endl;
+	std::cout << whitespace << " /  _____/   /  _  \\    /     \\ \\_   _____/ " << endl;
+	std::cout << whitespace << "/   \\  ___  /  /_\\  \\  /  \\ /  \\ |    __)_  " << endl;
+	std::cout << whitespace << "\\    \\_\\  \\/    |    \\/    Y    \\|        \\ " << endl;
+	std::cout << whitespace << " \\______  /\\____|__  /\\____|__  /_______  / " << endl;
+	std::cout << whitespace << "        \\/         \\/         \\/        \\/  " << endl;
+	std::cout << whitespace << "____________   _________________________    " << endl;
+	std::cout << whitespace << "\\_____  \\   \\ /   /\\_   _____/\\______   \\   " << endl;
+	std::cout << whitespace << " /   |   \\   Y   /  |    __)_  |       _/   " << endl;
+	std::cout << whitespace << "/    |    \\     /   |        \\ |    |   \\   " << endl;
+	std::cout << whitespace << "\\_______  /\\___/   /_______  / |____|_  /   " << endl;
+	std::cout << whitespace << "        \\/                 \\/         \\/    " << endl;
+	std::cout << "\n" << endl;
 	if (w == "Draw")
 	{
-		cout << whitespace << "\t\t  " << w << endl;
+		std::cout << whitespace << "\t\t  " << w << endl;
 	}
 	else
 	{
-		cout << setw(53) << " " << w << " wins!" << endl;
+		std::cout << setw(53) << " " << w << " wins!" << endl;
 	}
-	cout << "\n" << endl;
-	cout << whitespace << "	     Play Again? Y/N \n\n" << endl;
-	cout << "\n\n\n\n" << endl;
+	std::cout << "\n" << endl;
+	std::cout << whitespace << "	     Play Again? Y/N \n\n" << endl;
+	std::cout << "\n\n\n\n" << endl;
 }
 
 
 int main(int argc, char * argv[])
 {
+	//setlocale(LC_ALL, "");
 
 	//this loops from the game over menu back to start
 	while (true)
@@ -1484,15 +1485,15 @@ int main(int argc, char * argv[])
 			break;
 		}
 
-		bool keep_going = true;
+
 		//this while loop starts the game over
 		while (true)
 		{
-			keep_going = true;
+			bool keep_going = true;
 			srand((unsigned int)time(nullptr));
 
 			int turn = 0;
-		
+
 			string w = "Draw";
 			Ground g;
 			Player players[2];
@@ -1505,7 +1506,7 @@ int main(int argc, char * argv[])
 			if (nickname_check_two == true)
 			{
 				players[1].nick = true;
-			}	
+			}
 
 
 			players[0].health = players[0].health + health_toggle;
@@ -1524,31 +1525,37 @@ int main(int argc, char * argv[])
 			players[0].points = p1s;
 			players[1].points = p2s;
 
+			Wind();
+
+			g.InitializeGround();
+			
+			//players.initialize spawns the tanks location
+			players[0].Initialize(rand() % (cols / 4), LEFT);
+			players[1].Initialize(rand() % (cols / 4) + 3 * cols / 4 - 2, RIGHT);
+
 			initscr();
 			noecho();
 			resize_term(lines, cols);
 			keypad(stdscr, 1);
 			curs_set(0);
 
-			Wind();
-
-			g.InitializeGround();
-			//players.initialize spawns the tanks location
-			players[0].Initialize(rand() % (cols / 4), LEFT);
-			players[1].Initialize(rand() % (cols / 4) + 3 * cols / 4 - 2, RIGHT);
+			
 
 
 			//drawscreen does draw(g) and draw(players) as well as drawsettings(players)
 			//draw creates the tank
 			//drawsettings creates the words, gas, and health
-			DrawScreen(g, players, turn);
 
-			refresh();
+			DrawScreen(g, players, turn);
+	
 
 
 			//this loop is a players turn
 			while (keep_going)
 			{
+				erase();
+				refresh();
+				DrawScreen(g, players, turn);
 
 				int x = turn;
 				int winner_check = 0;
@@ -1557,7 +1564,7 @@ int main(int argc, char * argv[])
 				int  bullet_impact_horizontal = 0;
 				int  bullet_impact_vertical = 0;
 
-				
+
 
 				bool show_char = false;
 				int c = getch();
@@ -1614,10 +1621,10 @@ int main(int argc, char * argv[])
 					else
 						turn = 1 - turn;
 					Wind();
-						break;
+					break;
 				}
 
-					//move left
+				//move left
 				case 'a':
 				case 'A':
 					if (players[turn].gas > 0)
@@ -1650,7 +1657,7 @@ int main(int argc, char * argv[])
 					break;
 				}
 
-				
+
 				case KEY_DL:
 				case KEY_DC:
 				case KEY_BACKSPACE:
@@ -1676,7 +1683,7 @@ int main(int argc, char * argv[])
 						break;
 					}
 				}
-				
+
 				//for presentation purposes, M = MONEYMONEYMONEYMONEY or MAKEITRAINNN
 				case 'm':
 				case 'M':
@@ -1696,90 +1703,97 @@ int main(int argc, char * argv[])
 					Wind();
 					break;
 
+				case 'r':
+				case 'R':
+					land = !land;
+					DrawScreen(g, players, turn);
+					break;
+
 				case 'q':
 				case 'Q':
+						g.InitializeGround();
 					keep_going = false;
 					break;
 
 				default:
-					show_char = true;
+					//show_char = false;
 					break;
 				}
 
-				DrawScreen(g, players, turn);
-
-				if (show_char)
+				if (c != 'q' || c != 'Q')
 				{
-					move(0, 1);
-					stringstream ss;
-					ss << setw(4) << c << " ";
-					addstr(ss.str().c_str());
-					refresh();
-				}
+					DrawScreen(g, players, turn);
 
-				if (players[0].win_check == true)
-				{
-					if (nickname_check_one == true)
+					if (show_char)
 					{
-						w = players[0].nickname;
-					}
-					else
-					{
-						w = "Player 1";
+						move(0, 1);
+						stringstream ss;
+						ss << setw(4) << c << " ";
+						addstr(ss.str().c_str());
+						refresh();
 					}
 
-					keep_going = false;
-					players[0].points = players[0].points + 50;
-				}
 
-				else if (players[1].win_check == true)
-				{
-					if (nickname_check_two == true)
+					if (players[0].win_check == true)
 					{
-						w = players[1].nickname;
+						if (nickname_check_one == true)
+						{
+							w = players[0].nickname;
+						}
+						else
+						{
+							w = "Player 1";
+						}
+
+						keep_going = false;
+						players[0].points = players[0].points + 50;
 					}
-					else
+
+					else if (players[1].win_check == true)
 					{
-						w = "Player 2";
+						if (nickname_check_two == true)
+						{
+							w = players[1].nickname;
+						}
+						else
+						{
+							w = "Player 2";
+						}
+
+						keep_going = false;
+						players[1].points = players[1].points + 50;
+
 					}
 
-					keep_going = false;
-					players[1].points = players[1].points + 50;
-				}
+					//if both die in same turn
+					else if (players[1].win_check == true && players[2].win_check == true)
+					{
 
-				//if both die in same turn
-				else if (players[1].win_check == true && players[2].win_check == true)
-				{
-					
 						w = "Draw";
 
-					keep_going = false;
-					players[1].points + 50;
-					players[0].points + 50;
-				}
+						keep_going = false;
+						players[1].points + 50;
+						players[0].points + 50;
 
+					}
+				}
+				
 				p1s = players[0].points;
 				p2s = players[1].points;
-
 			}
 
 			erase();
-			refresh();
-			echo();
-			endwin();	//terminates your game, you can use cout after this.
+			endwin();
 
-						//play game over screen (not ncurses)
 			GameOver(w);
-
-
 
 
 
 			char input = ' ';
 
-			while ((input != 'y') || (input != 'Y') || (input != 'n') || (input != 'N'))
+			while (input == ' ')
 			{
-			input =	_getch();
+				input = _getch();
 
 
 				//if you hit Y it starts over
@@ -1788,9 +1802,9 @@ int main(int argc, char * argv[])
 					break;
 				}
 
-				else 
+				else
 				{
-					continue;
+					input = ' ';
 				}
 			}
 
@@ -1802,7 +1816,7 @@ int main(int argc, char * argv[])
 			{
 				continue;
 			}
-			
+
 
 #if defined(WIN32)
 			system("pause");
@@ -1810,23 +1824,16 @@ int main(int argc, char * argv[])
 			return 0;
 		}
 	}
-	
+
 
 	//try to make health hearts
+	//if you can get unicode or UTF-8 to work change ground as well
 	//add to log
+	//if ground is + 2 you can't move past it
 
 	//Bugs
 
-	//-fix flash that occurs during 'play'
-	//-bug where it has to have main menu x2 times to get a fresh map (this is due to the DrawScreen function)
-	//-first ground is still wrong occasionally
+	//on debugging screen the wind flashes
 
-
-	//extra credit Ideas
-
-	//if the ground doesn't have an icon make it so you can't move past it
-	//fill ground
-	//make a ascii robot thing that welcomes player to pointshop, they can say sorry you don't have credits, or maybe a random line about purchasing the thing they bought
 
 }
-

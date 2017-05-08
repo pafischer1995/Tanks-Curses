@@ -1,5 +1,7 @@
-#include "curses.h"
+﻿#include "curses.h"
 #include "ground.hpp"
+#include <iostream>
+#include <sstream>
 
 //this is where lines, cols, base_height_divisor, and max_heigh_divisor are created
 int lines = 40;
@@ -9,6 +11,8 @@ int base_height_divisor = 8;
 //max_height_divisor is 2 on original code
 int max_height_divisor = 2;
 extern int ground_type;
+extern bool land;
+
 
 //ground was initialized in ground.hpp
 void Ground::InitializeGround()
@@ -28,10 +32,10 @@ void Ground::InitializeGround()
 		//higher ground
 		if (ground_type == 3)
 		{
-			current_height = lines - (lines / base_height_divisor) - 10;
-			maximum_height = lines / max_height_divisor - 10;
-			ground_grow = 1200;
-			ground_shrink = 2400;
+			current_height = lines - (lines / base_height_divisor) - 15;
+			maximum_height = lines / max_height_divisor - 15;
+			ground_grow = 1600;
+			ground_shrink = 3200;
 		}
 		//normal ground
 		else if (ground_type == 2)
@@ -79,49 +83,92 @@ void Ground::InitializeGround()
 void Ground::Draw()
 {
 	
-	//goes from left to right. + rows and cols
-	//first 3 are for the first land, next are for the others
-	bool first_turn = true;
-	while (first_turn == true)
-	{
-		(ground.at(1) == ground.at(0));
-		mvaddch(ground.at(0), 1, '_');
-		first_turn = false;
-	}
+	int color = 0;
 
-	if (ground.at(1) > ground.at(0))
-	{
-		mvaddch(ground.at(0), 1, '\\');
-	}
-
-	else if (ground.at(1) < ground.at(0))
-	{
-		mvaddch(ground.at(0), 1, '/');
-	}
-
-	else
-	{
-		(ground.at(1) == ground.at(0));
-		mvaddch(ground.at(0), 1, '_');
-	}
-
-
-	for (size_t i = 1; i < ground.size(); i++)
-	{
-		if (ground.at(i) > ground.at(i - 1))
+		if (ground_type == 1)
 		{
-			mvaddch(ground.at(i), i + 1, '\\');
+			color = 11;
+		}
+		if (ground_type == 2)
+		{
+			color = 10;
+		}
+		if (ground_type == 3)
+		{
+			color = 8;
 		}
 
-		else if (ground.at(i) < ground.at(i - 1))
+	if (land == true)
+	{
+		attron(COLOR_PAIR(color));
+		//(goes down, goes one to the right)
+		for (int i = 0; i < ground.size(); i++)
 		{
-			mvaddch(ground.at(i) + 1, i + 1, '/');
+			//populates the ground down until col is full
+			for (int x = 0; x < LINES - 2 - ground.at(i); x++)
+			{
+				mvaddch(ground.at(i) + x + 1, i + 1, ' ');
+			}
+			//mvaddch(ground.at(i) + 1, i + 1, lg);
+			//mvaddch(ground.at(i) + 2, i + 1, lg);
 		}
 
-		else if (ground.at(i) == ground.at(i-1))
+		bool first_turn = true;
+		while (first_turn == true)
 		{
-			mvaddch(ground.at(i), i + 1, '_');
+			mvaddch(ground.at(0), +1, ' ');
+			first_turn = false;
 		}
+
+		for (size_t i = 1; i < ground.size(); i++)
+		{
+			if (ground.at(i) > ground.at(i - 1))
+			{
+				mvaddch(ground.at(i), i + 1, ' ');
+			}
+
+			else if (ground.at(i) < ground.at(i - 1))
+			{
+				mvaddch(ground.at(i) + 1, i + 1, ' ');
+			}
+
+			else if (ground.at(i) == ground.at(i - 1))
+			{
+				mvaddch(ground.at(i), i + 1, ' ');
+			}
+
+		}
+
+		attroff(COLOR_PAIR(color));
+	}
 	
+
+	else if (land == false)
+	{
+		bool first_turn = true;
+		while (first_turn == true)
+		{
+			mvaddch(ground.at(0), +1, '_');
+			first_turn = false;
+		}
+
+		for (size_t i = 1; i < ground.size(); i++)
+		{
+			if (ground.at(i) > ground.at(i - 1))
+			{
+				mvaddch(ground.at(i), i + 1, '\\');
+			}
+
+			else if (ground.at(i) < ground.at(i - 1))
+			{
+				mvaddch(ground.at(i) + 1, i + 1, '/');
+			}
+
+			else if (ground.at(i) == ground.at(i - 1))
+			{
+				mvaddch(ground.at(i), i + 1, '_');
+			}
+
+		}
 	}
 }

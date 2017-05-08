@@ -1,9 +1,10 @@
+﻿#include <iostream>
 #include <sstream>
 #include <iomanip>
 #include "curses.h"
 #include "player.hpp"
 #include <locale.h>
-#include <clocale>
+
 
 using namespace std;
 
@@ -16,8 +17,10 @@ extern bool show;
 extern bool wind_change;
 extern int wind_level;
 
+
 const int Player::power_increment = 1;
 const double Player::angle_increment = 1;
+
 
 //this is only incremented the first time
 Player::Player()
@@ -51,6 +54,7 @@ void Player::Draw(Ground & g)
 	init_pair(8, COLOR_BLACK, COLOR_WHITE);
 	init_pair(9, COLOR_BLACK, COLOR_RED);
 	init_pair(10, COLOR_BLACK, COLOR_GREEN);
+	init_pair(11, COLOR_BLACK, COLOR_YELLOW);
 
 	attron(COLOR_PAIR(color));
 
@@ -95,7 +99,6 @@ void Player::AngleDown()
 
 void Player::DrawSettings(int turn)
 {
-
 	bool my_turn = (turn == 0 && s == LEFT) || (turn == 1 && s == RIGHT);
 
 
@@ -107,29 +110,29 @@ void Player::DrawSettings(int turn)
 	if (s == RIGHT)
 		starting_column = cols - 18;
 
-	
 
-		if (my_turn)
-			attron(A_STANDOUT);
-		
-		//if the nickname has been changed tell nickname
-		if (nick == true)
-		{
-			ss << setw(10) << left << nickname;
-			mvaddstr(line++, starting_column, ss.str().c_str());
-		}
 
-		//if it hasn't been changed, give boring version
-		else
-		{
-			ss << setw(10) << left << "Player: " << player;
-			mvaddstr(line++, starting_column, ss.str().c_str());
-		}
-	
-		if (my_turn)
-			attroff(A_STANDOUT);
-	
-		char credit = 128;
+	if (my_turn)
+		attron(A_STANDOUT);
+
+	//if the nickname has been changed tell nickname
+	if (nick == true)
+	{
+		ss << setw(10) << left << nickname;
+		mvaddstr(line++, starting_column, ss.str().c_str());
+	}
+
+	//if it hasn't been changed, give boring version
+	else
+	{
+		ss << setw(10) << left << "Player: " << player;
+		mvaddstr(line++, starting_column, ss.str().c_str());
+	}
+
+	if (my_turn)
+		attroff(A_STANDOUT);
+
+	char credit = 128;
 
 	ss = stringstream();
 	ss << setw(10) << left << "Angle: " << setw(6) << angle;
@@ -149,7 +152,7 @@ void Player::DrawSettings(int turn)
 	addstr(ss.str().c_str());
 
 	if (wind_change == true)
-	{		
+	{
 		if (wind_level == 1)
 		{
 			ss = stringstream();
@@ -207,19 +210,23 @@ void Player::DrawSettings(int turn)
 
 	int color = (bomb_type + 8);
 	char square = 'o';
-	
+
 	attron(COLOR_PAIR(color));
 	ss = stringstream();
 	ss << square;
 	mvaddstr(4, starting_column + 10, ss.str().c_str());
 	attroff(COLOR_PAIR(color));
+
 	
 
 	attron(COLOR_PAIR(1));
+
+	char h = 254;
+
 	ss = stringstream();
 	for (unsigned int i = 0; i < health; i++)
-	{
-		ss << "X ";
+	{	
+		ss << h << " ";
 	}
 	mvaddstr(line++, starting_column, ss.str().c_str());
 	attroff(COLOR_PAIR(1));
