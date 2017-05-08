@@ -13,6 +13,8 @@ extern int base_height_divisor;
 extern int max_height_divisor;
 extern int ground_type;
 extern bool show;
+extern bool wind_change;
+extern int wind_level;
 
 const int Player::power_increment = 1;
 const double Player::angle_increment = 1;
@@ -96,6 +98,7 @@ void Player::DrawSettings(int turn)
 
 	bool my_turn = (turn == 0 && s == LEFT) || (turn == 1 && s == RIGHT);
 
+
 	int starting_column = 2;
 	int line = 1;
 	char player = (s == LEFT) ? '1' : '2';
@@ -144,6 +147,63 @@ void Player::DrawSettings(int turn)
 	ss << "(P) PointShop";
 	move(4, COLS / 2 - 7);
 	addstr(ss.str().c_str());
+
+	if (wind_change == true)
+	{		
+		if (wind_level == 1)
+		{
+			ss = stringstream();
+			ss << "< < <";
+			move(2, COLS / 2 - 3);
+			addstr(ss.str().c_str());
+		}
+		else if (wind_level == 2)
+		{
+			ss = stringstream();
+			ss << "< <";
+			move(2, COLS / 2 - 1);
+			addstr(ss.str().c_str());
+		}
+
+		else if (wind_level == 3)
+		{
+			ss = stringstream();
+			ss << "<";
+			move(2, COLS / 2 -1);
+			addstr(ss.str().c_str());
+		}
+
+		else if (wind_level == 4)
+		{
+			ss = stringstream();
+			ss << "> > >";
+			move(2, COLS / 2 - 3);
+			addstr(ss.str().c_str());
+		}
+		else if (wind_level == 5)
+		{
+			ss = stringstream();
+			ss << "> >";
+			move(2, COLS / 2 - 1);
+			addstr(ss.str().c_str());
+		}
+
+		else if (wind_level == 6)
+		{
+			ss = stringstream();
+			ss << ">";
+			move(2, COLS / 2 - 1);
+			addstr(ss.str().c_str());
+		}
+	}
+	else if (wind_change == false)
+	{
+		ss = stringstream();
+		ss << "No Wind";
+		move(2, COLS / 2 - 4);
+		addstr(ss.str().c_str());
+	}
+
 
 	if (show == true)
 	{

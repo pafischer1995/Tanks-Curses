@@ -51,8 +51,10 @@ bool destroy = false;
 int p1s = 0;						//player 1 score storage
 int p2s = 0;						//player 2 score storage
 int ground_type = 2;
-bool wind_change = false;
-bool show = false;						//show debugging stuff
+bool show = false;					//show debugging stuff
+
+bool wind_change = false;			//done in the settings
+int wind_level = 0;
 
 const double PI = 3.141592653589793238463;
 
@@ -74,25 +76,145 @@ void DrawScreen(Ground & g, Player * players, int turn)
 
 //http://www.iforce2d.net/b2dtut/projected-trajectory
 
-
 //this function shoots bullet
 //projects the path of the bullet as ACS_BULLET(before was *)
 //it wants to know where the ground is, where the player is, and whos turn it is
 //if bullet goes far to the right it stops doing ground damage at a certain col
 
 
-void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
+void Wind()
 {
+	int wc2c = rand() % 10;		//wind chance to change
+	bool first_turn = true;
+	//this gives it a chance to stay the same for more than one turn.
+
+	if (wind_change == true)
+	{
+		if (first_turn == true)
+		{
+			int r = rand() % 6;
+			//low wind left
+			if (r == 0)
+			{
+				wind_level = 1;
+			}
+
+			//medium wind left 
+			else if (r == 1)
+			{
+				wind_level = 2;
+			}
+
+			//strong wind left
+			else if (r == 2)
+			{
+				wind_level = 3;
+			}
+
+			//low wind right
+			else if (r == 3)
+			{
+				wind_level = 4;
+			}
+
+			//medium wind tight
+			else if (r == 4)
+			{
+				wind_level = 5;
+			}
+
+			//strong wind right
+			else if (r == 5)
+			{
+				wind_level = 6;
+			}
+			first_turn = false;
+		}
+
+			else if (wc2c > 3)
+			{
+				int r = rand() % 6;
+				//low wind left
+				if (r == 0)
+				{
+					wind_level = 1;
+				}
+
+				//medium wind left 
+				else if (r == 1)
+				{
+					wind_level = 2;
+				}
+
+				//strong wind left
+				else if (r == 2)
+				{
+					wind_level = 3;
+				}
+
+				//low wind right
+				else if (r == 3)
+				{
+					wind_level = 4;
+				}
+
+				//medium wind tight
+				else if (r == 4)
+				{
+					wind_level = 5;
+				}
+
+				//strong wind right
+				else if (r == 5)
+				{
+					wind_level = 6;
+				}
+			}
+		}
+	
+	else
+	{
+		//else wind is false and default of .2 is shown
+		wind_level = 0;
+	}
+}
+
+
+void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
+{	
+	double ws = 0.0; //wind strength
+
+	if (wind_level == 0)
+		ws = .02;
+	else if (wind_level == 1)
+		ws = .02;
+	else if (wind_level == 2)
+		ws = .02;
+	else if (wind_level == 3)
+		ws = .02;
+	else if (wind_level == 4)
+		ws = .02;
+	else if (wind_level == 5)
+		ws = .02;
+	else if (wind_level == 6)
+		ws = .02;
+
 	start_color();
 	init_pair(0, COLOR_WHITE, COLOR_BLACK);
 	init_pair(1, COLOR_RED, COLOR_BLACK);
 	init_pair(2, COLOR_GREEN, COLOR_BLACK);
 
+	//this takes the angle and turns it into radians
 	double angle = players[turn].angle / 180.0 * PI;
+
+
+	//double y_component = sin(angle) * players[turn].power * 0.2;
+	//double x_component = cos(angle) * players[turn].power * 0.2;
+
 	//vertical
-	double y_component = sin(angle) * players[turn].power * 0.2;
+	double y_component = (sin(angle) * players[turn].power * 0.2); //* wc;
 	//horizontal
-	double x_component = cos(angle) * players[turn].power * 0.2;
+		double x_component = (cos(angle) * players[turn].power * 0.2); //* wc;
 
 	double pNx;
 	double pNy;
@@ -1354,7 +1476,8 @@ int main(int argc, char * argv[])
 			if (nickname_check_two == true)
 			{
 				players[1].nick = true;
-			}
+			}	
+
 
 			players[0].health = players[0].health + health_toggle;
 			players[1].health = players[1].health + health_toggle;
@@ -1378,6 +1501,7 @@ int main(int argc, char * argv[])
 			keypad(stdscr, 1);
 			curs_set(0);
 
+			Wind();
 
 			g.InitializeGround();
 			//players.initialize spawns the tanks location
@@ -1392,6 +1516,7 @@ int main(int argc, char * argv[])
 
 			refresh();
 
+
 			//this loop is a players turn
 			while (keep_going)
 			{
@@ -1399,10 +1524,11 @@ int main(int argc, char * argv[])
 				int x = turn;
 				int winner_check = 0;
 
-
 				//keep bullet in loop so that it doesn't hurt player 2 rounds in a row
 				int  bullet_impact_horizontal = 0;
 				int  bullet_impact_vertical = 0;
+
+				
 
 				bool show_char = false;
 				int c = getch();
@@ -1453,10 +1579,12 @@ int main(int argc, char * argv[])
 					{
 						players[turn].gas = players[turn].gas + 1;
 						turn = 1 - turn;
+						Wind();
 						break;
 					}
 					else
 						turn = 1 - turn;
+					Wind();
 						break;
 				}
 
@@ -1502,17 +1630,20 @@ int main(int argc, char * argv[])
 					{
 						players[turn].gas = players[turn].gas + 1;
 						turn = 1 - turn;
+						Wind();
 						break;
 					}
 					else if (players[turn].gas < gas_toggle)
 					{
 						players[turn].gas = players[turn].gas + 2;
 						turn = 1 - turn;
+						Wind();
 						break;
 					}
 					else
 					{
 						turn = 1 - turn;
+						Wind();
 						break;
 					}
 				}
@@ -1529,6 +1660,11 @@ int main(int argc, char * argv[])
 				case 's':
 				case 'S':
 					show = !show;
+					break;
+
+				case 'w':
+				case 'W':
+					Wind();
 					break;
 
 				case 'q':
@@ -1649,21 +1785,18 @@ int main(int argc, char * argv[])
 
 	//try to make health hearts
 	//add to log
-	//make large bomb do more land damage
 
 	//Bugs
 
 	//-fix flash that occurs during 'play'
 	//-ground doesn't take damage after a certain line down
 	//-bug where it has to have main menu x2 times to get a fresh map (this is due to the DrawScreen function)
-	//-game crashed once when bomb went off screen at the very bottom right corner, didn't hit ground
 	//-first ground is still wrong occasionally
 
 	//extra credit Ideas
 
 	//if the ground doesn't have an icon make it so you can't move past it
 	//- wind
-	//-different terrains in the settings (as is is medium. flat is 1, high elevation is 3
 	//fill ground
 	//make a ascii robot thing that welcomes player to pointshop, they can say sorry you don't have credits, or maybe a random line about purchasing the thing they bought
 
