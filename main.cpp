@@ -48,13 +48,14 @@ char temp_nickname_two[24];
 bool nickname_check_two = false;
 bool destroy = false;
 
+
 int p1s = 0;						//player 1 score storage
 int p2s = 0;						//player 2 score storage
 int ground_type = 2;
 bool wind_change = false;
 bool show = false;						//show debugging stuff
-
 const double PI = 3.141592653589793238463;
+
 
 
 
@@ -93,6 +94,15 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 	double y_component = sin(angle) * players[turn].power * 0.2;
 	//horizontal
 	double x_component = cos(angle) * players[turn].power * 0.2;
+	if (wind_change == true)
+	{
+		players[turn].power + rand()%10+1;
+		angle - rand() % 10 + 1;
+	}
+	if (wind_change == false)
+	{
+
+	}
 
 	double pNx;
 	double pNy;
