@@ -2231,8 +2231,8 @@ int main(int argc, char * argv[])
 			//this loop is a players turn
 			while (keep_going)
 			{
-				erase();
-				refresh();
+				//erase();
+				//refresh();
 
 				DrawScreen(g, players, turn);
 
