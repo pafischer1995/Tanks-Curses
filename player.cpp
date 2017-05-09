@@ -221,12 +221,12 @@ void Player::DrawSettings(int turn)
 
 	attron(COLOR_PAIR(1));
 
-	char h = 254;
+	wchar_t heart[] = L"\u2665";
 
 	ss = stringstream();
 	for (unsigned int i = 0; i < health; i++)
 	{	
-		ss << h << " ";
+		ss << heart << " ";
 	}
 	mvaddstr(line++, starting_column, ss.str().c_str());
 	attroff(COLOR_PAIR(1));
@@ -286,16 +286,17 @@ void Player::DrawSettings(int turn)
 		move(LINES - 1, COLS / 2 - 48);
 		addstr(ss.str().c_str());
 		
+		ss = stringstream();
+		ss << wind_level << "]";
+		move(0, COLS / 2 + 31);
+		addstr(ss.str().c_str());
 
 		ss = stringstream();
-		ss << "Turn[" << turn << "] Wind Strength [0.000]";
+		ss << "Turn[" << turn << "] Wind Strength[";
 		move(0, COLS / 2 + 9);
 		addstr(ss.str().c_str());
 
-		ss = stringstream();
-		ss << ws;
-		move(0, COLS / 2 + 32);
-		addstr(ss.str().c_str());
+		
 		refresh();
 	}
 }

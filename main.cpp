@@ -288,6 +288,12 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 			break;
 		}
 
+		//if you directly hit the tank
+		if (pNy == players[turn].col && pNx == players[turn].line)
+		{
+			break;
+		}
+
 
 		//this makes the bullet only one
 		erase();
@@ -338,7 +344,7 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 			g.ground.at(bih - 1)++;
 		}
 		//if it's on screen and there is at least one more space
-		if (biv < COLS - 2)
+		if (biv < COLS - 4)
 		{
 			g.ground.at(bih + 1)++;
 		}
@@ -1106,9 +1112,26 @@ void Pointshop(Ground & g, Player * players, int turn)
 		addstr(ss.str().c_str());
 
 		ss = stringstream();
+		ss << "                           ";
+		move(13, COLS / 2 - 15);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "                           ";
+		move(14, COLS / 2 - 15);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "                   ";
+		move(15, COLS / 2 - 15);
+		addstr(ss.str().c_str());
+
+
+		ss = stringstream();
 		ss << "(B) Back";
 		move(15, COLS / 2 + 3);
 		addstr(ss.str().c_str());
+		refresh();
 
 		int c = getch();
 		switch (c)
@@ -1347,9 +1370,9 @@ void Log()
 		move(LINES / 2, COLS / 2 - 22);
 		addstr(ss.str().c_str());
 
-		stringstream ss;
-		ss << "Tanks v.2.";
-		move(LINES / 2 - 3, COLS / 2 - 22);
+		ss = stringstream();
+		ss << "Tanks v.2.4.1";
+		move(LINES / 2 - 3, COLS / 2 - 7);
 		addstr(ss.str().c_str());
 
 		ss = stringstream();
@@ -1422,7 +1445,9 @@ void GameOver(string w)
 
 int main(int argc, char * argv[])
 {
+	
 	//setlocale(LC_ALL, "");
+
 	//was trying to use UTF-8, UTF-16, or Unicode. Tried to use the line above, as well as the _setmode function
 	//when on a page that was using c++ it worked, else it didn't
 	//couldn't implement because if I broke to use c++ to use icons, if I went to do initscr() it would just clear all the stuff I had done.
@@ -1552,8 +1577,6 @@ int main(int argc, char * argv[])
 			keypad(stdscr, 1);
 			curs_set(0);
 
-			
-
 
 			//drawscreen does draw(g) and draw(players) as well as drawsettings(players)
 			//draw creates the tank
@@ -1562,25 +1585,11 @@ int main(int argc, char * argv[])
 			DrawScreen(g, players, turn);
 	
 
-
 			//this loop is a players turn
 			while (keep_going)
 			{
-				//erase();
-				//refresh();
-
-				if (show == true)
-				{
-					stringstream ss;
-					ss << "hi";
-					move(LINES - 1, COLS / 2 - 51);
-					addstr(ss.str().c_str());
-
-					ss = stringstream();
-					ss << "no";
-					move(LINES - 1, COLS / 2 - 41);
-					addstr(ss.str().c_str());
-				}
+				erase();
+				refresh();
 
 				DrawScreen(g, players, turn);
 
@@ -1591,7 +1600,19 @@ int main(int argc, char * argv[])
 				int  bullet_impact_horizontal = 0;
 				int  bullet_impact_vertical = 0;
 
+				if (show == true)
+				{
+					stringstream ss;
+					ss << players[turn].col;
+					move(LINES - 1, COLS / 2 - 51);
+					addstr(ss.str().c_str());
 
+					ss = stringstream();
+					ss << players[turn].line;
+					move(LINES - 1, COLS / 2 - 41);
+					addstr(ss.str().c_str());
+				}
+				refresh();
 
 				bool show_char = false;
 				int c = getch();
@@ -1654,14 +1675,18 @@ int main(int argc, char * argv[])
 				//move left
 				case 'a':
 				case 'A':
-					if (players[turn].gas > 0)
+					if (players[turn].gas > 0 && players[turn].col > 0)
 					{
 						//if the ground to the left is more than 1 higher up you can't move past
 						if (g.ground.at(players[turn].col) - g.ground.at(players[turn].col - 1) >= 2)
 						{
 							continue;
 						}
-
+						//tank can't move past the other
+						else if (players[0].col + 1 == players[1].col)
+						{
+							break;
+						}
 
 							//move, subtract gas
 							players[turn].col--;
@@ -1676,10 +1701,15 @@ int main(int argc, char * argv[])
 					//move right
 				case 'd':
 				case 'D':
-					if (players[turn].gas > 0)
+					if (players[turn].gas > 0 && players[turn].col < 117)
 					{
 						//if the ground to the right is more than 1 higher up you can't move past
 						if (g.ground.at(players[turn].col) - g.ground.at(players[turn].col + 1) >= 2)
+						{
+							break;
+						}
+						//tank can't move past the other
+						else if (players[1].col - 1 == players[0].col)
 						{
 							break;
 						}
@@ -1880,11 +1910,8 @@ int main(int argc, char * argv[])
 
 
 	//Bugs
-	//on debugging screen the wind flashes
 
 	//try to make health hearts
 	//if you can get unicode or UTF-8 to work change ground as well
-	//add to log
-	//
 
 }

@@ -167,9 +167,9 @@ void Ground::Draw()
 			{
 				if (ground.at(i - 2) + 1 == ground.at(i - 1) && ground.at(i) + 1 == ground.at(i - 1))
 				{
-					mvaddch(ground.at(i), i + 1, '_');
-					mvaddch(ground.at(i) + 1, i + 1, '/');
-					mvaddch(ground.at(i) + 1, i - 1, '\\');
+					
+					mvaddch(ground.at(i) + 1, i + 1, '|');
+					mvaddch(ground.at(i) + 1, i - 1, '|');
 					mvaddch(ground.at(i) + 1, i, '_');
 				}
 
