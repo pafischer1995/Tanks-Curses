@@ -17,10 +17,6 @@ extern bool land;
 //ground was initialized in ground.hpp
 void Ground::InitializeGround()
 {
-	//ground_type == 1 is flat
-	//ground_type == 2 is normal
-	//ground_type == 3 is higher up
-
 		//int current_height = lines - lines / base_height_divisor;
 		//int maximum_height = lines / max_height_divisor;
 
@@ -82,7 +78,6 @@ void Ground::InitializeGround()
 
 void Ground::Draw()
 {
-	
 	int color = 0;
 
 		if (ground_type == 1)
@@ -98,6 +93,7 @@ void Ground::Draw()
 			color = 8;
 		}
 
+	
 	if (land == true)
 	{
 		attron(COLOR_PAIR(color));
@@ -122,21 +118,7 @@ void Ground::Draw()
 
 		for (size_t i = 1; i < ground.size(); i++)
 		{
-			if (ground.at(i) > ground.at(i - 1))
-			{
 				mvaddch(ground.at(i), i + 1, ' ');
-			}
-
-			else if (ground.at(i) < ground.at(i - 1))
-			{
-				mvaddch(ground.at(i) + 1, i + 1, ' ');
-			}
-
-			else if (ground.at(i) == ground.at(i - 1))
-			{
-				mvaddch(ground.at(i), i + 1, ' ');
-			}
-
 		}
 
 		attroff(COLOR_PAIR(color));
@@ -150,25 +132,89 @@ void Ground::Draw()
 		{
 			mvaddch(ground.at(0), +1, '_');
 			first_turn = false;
+
+			if (ground.at(1) == ground.at(0))
+			{
+				mvaddch(ground.at(1), + 2, '_');
+			}
+			else if (ground.at(1) < ground.at(0))
+			{
+				mvaddch(ground.at(0), + 2, '/');
+			}
+			else if (ground.at(1) > ground.at(0))
+			{
+				mvaddch(ground.at(0) + 1, + 2, '\\');
+			}
+			else
+			{
+				mvaddch(ground.at(1), + 2, '_');
+			}
+
+
 		}
+ 
 
-		for (size_t i = 1; i < ground.size(); i++)
+		for (size_t i = 2; i < ground.size(); i++)
 		{
-			if (ground.at(i) > ground.at(i - 1))
-			{
-				mvaddch(ground.at(i), i + 1, '\\');
-			}
-
-			else if (ground.at(i) < ground.at(i - 1))
-			{
-				mvaddch(ground.at(i) + 1, i + 1, '/');
-			}
-
-			else if (ground.at(i) == ground.at(i - 1))
+			//flat ground
+			if (ground.at(i) == ground.at(i - 1))
 			{
 				mvaddch(ground.at(i), i + 1, '_');
 			}
 
+			//going up
+			else if (ground.at(i) + 1 == ground.at(i - 1))
+			{
+				if (ground.at(i - 2) + 1 == ground.at(i - 1) && ground.at(i) + 1 == ground.at(i - 1))
+				{
+					mvaddch(ground.at(i), i + 1, '_');
+					mvaddch(ground.at(i) + 1, i + 1, '/');
+					mvaddch(ground.at(i) + 1, i - 1, '\\');
+					mvaddch(ground.at(i) + 1, i, '_');
+				}
+
+				else
+				{
+					mvaddch(ground.at(i), i + 1, '_');
+					mvaddch(ground.at(i) + 1, i, '/');
+				}
+			}
+
+			//going down
+			else if (ground.at(i) - 1 == ground.at(i - 1))
+			{
+					mvaddch(ground.at(i), i + 1, '\\');
+			}
+
+			//flat wall right
+			else if (ground.at(i) + 1 < ground.at(i - 1))
+			{
+				mvaddch(ground.at(i), i + 1, '_');
+
+				int x = 0;
+				while (ground.at(i) + x != ground.at(i - 1))
+				{
+					mvaddch(ground.at(i) + x + 1, i + 1, '|');
+					x++;
+				}
+			}
+			//flat wall left
+			else if (ground.at(i - 1) + 1 < ground.at(i))
+			{
+				mvaddch(ground.at(i), i + 1, '_');
+
+				int x = 0;
+				while (ground.at(i - 1) + x != ground.at(i))
+				{
+					mvaddch(ground.at(i) - x, i, '|');
+					x++;
+				}
+			}
+
+			else
+			{
+				mvaddch(ground.at(i), i + 1, '_');
+			}
 		}
 	}
 }

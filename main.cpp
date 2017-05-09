@@ -297,13 +297,13 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 		{
 			stringstream ss;
 			ss = stringstream();
-			ss << pNx;
-			move(LINES - 1, COLS / 2 - 2);
+			ss << setw(3) << right << pNx;
+			move(LINES - 1, COLS / 2 - 3);
 			addstr(ss.str().c_str());
 
 			ss = stringstream();
 			ss << pNy;
-			move(LINES - 1, COLS / 2 + 6);
+			move(LINES - 1, COLS / 2 + 8);
 			addstr(ss.str().c_str());
 			refresh();
 		}
@@ -346,11 +346,11 @@ void Shoot(Ground & g, Player * players, int turn, int bih, int biv)
 		//if it's a large bomb- radius is bigger
 		if (players[turn].bomb_type == 2)
 		{
-			if (biv > 3)
+			if (biv > 5)
 			{
 				g.ground.at(bih - 2)++;
 			}
-			if (biv < COLS - 3)
+			if (biv < COLS - 5)
 			{
 				g.ground.at(bih + 2)++;
 			}
@@ -1315,6 +1315,7 @@ void Pointshop(Ground & g, Player * players, int turn)
 
 //http://stackoverflow.com/questions/18028808/blinking-underscore-with-console
 //this function hides the cursor in c++, found at website above
+//if not okay to use, please disregard, only hides cursor on the gameover/c++ function
 void ShowConsoleCursor(bool showFlag)
 {
 	HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -1328,18 +1329,27 @@ void ShowConsoleCursor(bool showFlag)
 
 void Log()
 {
-
 	erase();
 	refresh();
 	noecho();
+	refresh();
+
+
+
+
 	bool is_l = true;
 
 	while (is_l == true)
 	{
 
 		stringstream ss;
-		ss << setw(10) << right << "Add Log";
-		move(LINES / 2, COLS / 2);
+		ss << "https://github.com/pafischer1995/Tanks-Curses";
+		move(LINES / 2, COLS / 2 - 22);
+		addstr(ss.str().c_str());
+
+		stringstream ss;
+		ss << "Tanks v.2.";
+		move(LINES / 2 - 3, COLS / 2 - 22);
 		addstr(ss.str().c_str());
 
 		ss = stringstream();
@@ -1413,6 +1423,9 @@ void GameOver(string w)
 int main(int argc, char * argv[])
 {
 	//setlocale(LC_ALL, "");
+	//was trying to use UTF-8, UTF-16, or Unicode. Tried to use the line above, as well as the _setmode function
+	//when on a page that was using c++ it worked, else it didn't
+	//couldn't implement because if I broke to use c++ to use icons, if I went to do initscr() it would just clear all the stuff I had done.
 
 	//this loops from the game over menu back to start
 	while (true)
@@ -1553,8 +1566,22 @@ int main(int argc, char * argv[])
 			//this loop is a players turn
 			while (keep_going)
 			{
-				erase();
-				refresh();
+				//erase();
+				//refresh();
+
+				if (show == true)
+				{
+					stringstream ss;
+					ss << "hi";
+					move(LINES - 1, COLS / 2 - 51);
+					addstr(ss.str().c_str());
+
+					ss = stringstream();
+					ss << "no";
+					move(LINES - 1, COLS / 2 - 41);
+					addstr(ss.str().c_str());
+				}
+
 				DrawScreen(g, players, turn);
 
 				int x = turn;
@@ -1629,10 +1656,19 @@ int main(int argc, char * argv[])
 				case 'A':
 					if (players[turn].gas > 0)
 					{
-						//move, subtract gas
-						players[turn].col--;
-						players[turn].gas--;
-						break;
+						//if the ground to the left is more than 1 higher up you can't move past
+						if (g.ground.at(players[turn].col) - g.ground.at(players[turn].col - 1) >= 2)
+						{
+							continue;
+						}
+
+
+							//move, subtract gas
+							players[turn].col--;
+							players[turn].gas--;
+							break;
+						
+						
 					}
 					else
 						continue;
@@ -1642,10 +1678,20 @@ int main(int argc, char * argv[])
 				case 'D':
 					if (players[turn].gas > 0)
 					{
-						//move, subtract gas
-						players[turn].col++;
-						players[turn].gas--;
-						break;
+						//if the ground to the right is more than 1 higher up you can't move past
+						if (g.ground.at(players[turn].col) - g.ground.at(players[turn].col + 1) >= 2)
+						{
+							break;
+						}
+
+						else
+						{
+							//move, subtract gas
+							players[turn].col++;
+							players[turn].gas--;
+							break;
+						}
+					
 					}
 					else
 						continue;
@@ -1696,6 +1742,8 @@ int main(int argc, char * argv[])
 				case 's':
 				case 'S':
 					show = !show;
+					erase();
+					DrawScreen(g, players, turn);
 					break;
 
 				case 'w':
@@ -1719,6 +1767,8 @@ int main(int argc, char * argv[])
 					//show_char = false;
 					break;
 				}
+
+				
 
 				if (c != 'q' || c != 'Q')
 				{
@@ -1826,14 +1876,15 @@ int main(int argc, char * argv[])
 	}
 
 
+
+
+
+	//Bugs
+	//on debugging screen the wind flashes
+
 	//try to make health hearts
 	//if you can get unicode or UTF-8 to work change ground as well
 	//add to log
-	//if ground is + 2 you can't move past it
-
-	//Bugs
-
-	//on debugging screen the wind flashes
-
+	//
 
 }

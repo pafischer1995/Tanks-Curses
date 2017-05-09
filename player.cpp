@@ -267,14 +267,25 @@ void Player::DrawSettings(int turn)
 		addstr(ss.str().c_str());
 
 		ss = stringstream();
-		ss << "COL:" << setw(2) << "00";
-		move(LINES - 1, COLS / 2 - 6);
+		ss << "B_COL:" << setw(2) << "000 ";
+		move(LINES - 1, COLS / 2 - 9);
 		addstr(ss.str().c_str());
 
 		ss = stringstream();
-		ss << "LINE:" << setw(2) << "00";
-		move(LINES - 1, COLS / 2 + 1);
+		ss << "B_LINE:" << setw(2) << "00";
+		move(LINES - 1, COLS / 2 + 1 );
 		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "T_LINE:" << setw(3) << "000 ";
+		move(LINES - 1, COLS / 2 - 59);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "T_COL: " << setw(2) << "00";
+		move(LINES - 1, COLS / 2 - 48);
+		addstr(ss.str().c_str());
+		
 
 		ss = stringstream();
 		ss << "Turn[" << turn << "] Wind Strength [0.000]";
