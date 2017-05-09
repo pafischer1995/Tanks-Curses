@@ -577,8 +577,8 @@ void Credits()
 	{
 		// (up and down, left and right)
 		stringstream ss;
-		ss << "Game written and developed by Paul A. Fischer.";
-		move(LINES / 2 - 4, 38);
+		ss << "Game written and developed by Paul A. Fischer and Donald Jervis.";
+		move(LINES / 2 - 4, 30);
 		addstr(ss.str().c_str());
 
 		ss = stringstream();
@@ -587,8 +587,8 @@ void Credits()
 		addstr(ss.str().c_str());
 
 		ss = stringstream();
-		ss << "pfischer@carthage.edu";
-		move(LINES / 2, COLS / 2 - 11);
+		ss << "pfischer@carthage.edu, djervis@carthage.edu";
+		move(LINES / 2 , COLS / 2 - 21);
 		addstr(ss.str().c_str());
 
 		ss = stringstream();

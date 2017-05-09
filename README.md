@@ -13,7 +13,7 @@ Jump in the cockpit of a personalized tank and storm the front line of the battl
 
 ## Team Members:
 * Paul A. Fischer paulfischerproductions@gmail.com, pfischer@carthage.edu
-* Donald Jervis
+* Donald Jervis djervis@carthage.edu
 
 ## About the Project
 Tanks was created as a final project for Computer Science II at Carthage College. Ideas for the game were sourced from conversations with peers, other versions online, teacher recommendations, as well as a multitude of other games. This program was written first year of learning the language, thus the langauge may be crude. Tanks was written in Visual Stuido 15 using c++ and ncurses. Total time invested is 52 hours over the course of 5 days.
