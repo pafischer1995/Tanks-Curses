@@ -221,12 +221,12 @@ void Player::DrawSettings(int turn)
 
 	attron(COLOR_PAIR(1));
 
-	wchar_t heart[] = L"\u2665";
+	char h = 254;
 
 	ss = stringstream();
 	for (unsigned int i = 0; i < health; i++)
 	{	
-		ss << heart << " ";
+		ss << h << " ";
 	}
 	mvaddstr(line++, starting_column, ss.str().c_str());
 	attroff(COLOR_PAIR(1));
