@@ -47,6 +47,8 @@ char temp_nickname_two[24];
 bool nickname_check_two = false;
 bool destroy = false;
 bool land = false;
+bool butter = false;
+bool ft = false;
 
 int p1s = 0;						//player 1 score storage
 int p2s = 0;						//player 2 score storage
@@ -845,7 +847,7 @@ void Settings(Player & players)
 		{
 			ss = stringstream();
 			ss << setw(10) << right << "(T) Toggle Terrain Type: \t    <Low>          Medium          High ";
-			move(21, 9);
+			move(20, 9);
 			addstr(ss.str().c_str());
 			refresh();
 		}
@@ -854,7 +856,7 @@ void Settings(Player & players)
 			;
 			ss = stringstream();
 			ss << setw(10) << right << "(T) Toggle Terrain Type: \t     Low          <Medium>         High ";
-			move(21, 9);
+			move(20, 9);
 			addstr(ss.str().c_str());
 			refresh();
 		}
@@ -862,7 +864,7 @@ void Settings(Player & players)
 		{
 			ss = stringstream();
 			ss << setw(10) << right << "(T) Toggle Terrain Type: \t     Low           Medium         <High> ";
-			move(21, 9);
+			move(20, 9);
 			addstr(ss.str().c_str());
 			refresh();
 		}
@@ -873,27 +875,42 @@ void Settings(Player & players)
 		{
 			ss = stringstream();
 			ss << setw(10) << right << "(W) Toggle Wind: \t\t    <True>         False ";
-			move(23, 9);
+			move(22, 9);
 			addstr(ss.str().c_str());
 		}
 		else if (wind_change == false)
 		{
 			ss = stringstream();
 			ss << setw(10) << right << "(W) Toggle Wind: \t\t     True         <False>";
-			move(23, 9);
+			move(22, 9);
 			addstr(ss.str().c_str());
 		}
 
 
 		ss = stringstream();
 		ss << setw(10) << right << "(H) Starting Health \t<" << health_toggle << ">";
-		move(25, 9);
+		move(24, 9);
 		addstr(ss.str().c_str());
 
 		ss = stringstream();
 		ss << setw(10) << right << "(P) Starting Petrol \t<" << gas_toggle << ">";
-		move(27, 9);
+		move(26, 9);
 		addstr(ss.str().c_str());
+
+		if (butter == true)
+		{
+			ss = stringstream();
+			ss << setw(10) << right << "(?) Buttered Toast? \t\t    <Yes>         No ";
+			move(28, 9);
+			addstr(ss.str().c_str());
+		}
+		else if (butter == false)
+		{
+			ss = stringstream();
+			ss << setw(10) << right << "(?) Buttered Toast? \t\t     Yes         <No> ";
+			move(28, 9);
+			addstr(ss.str().c_str());
+		}
 
 		ss = stringstream();
 		ss << "(B) Back";
@@ -909,6 +926,15 @@ void Settings(Player & players)
 		case 'B':
 			keep_going = false;
 			break;
+
+
+		case '?':
+		case '/':
+		{
+			butter = !butter;
+			ft = true;
+			break;
+		}
 
 
 		case 'p':
@@ -937,6 +963,7 @@ void Settings(Player & players)
 				health_toggle = 1;
 				break;
 			}
+			
 
 			//wind toggle
 		case 'w':
@@ -1059,79 +1086,323 @@ void Pointshop(Ground & g, Player * players, int turn)
 		refresh();
 		noecho();
 
+		if (butter == false)
+		{
+			stringstream ss;
+
+			for (unsigned int i = 0; i < 28; i++)
+			{
+				mvaddch(2, COLS / 2 - 16 + i, ACS_HLINE);
+				mvaddch(16, COLS / 2 - 16 + i, ACS_HLINE);
+			}
+
+			for (unsigned int i = 0; i < 14; i++)
+			{
+				mvaddch(2 + i, COLS / 2 - 16, ACS_VLINE);
+				mvaddch(2 + i, COLS / 2 + 12, ACS_VLINE);
+			}
+
+			//this means move to this location (row, col, ch) and add the char
+			//upper left
+			mvaddch(2, COLS / 2 - 16, ACS_ULCORNER);
+			//upper right
+			mvaddch(2, COLS / 2 + 12, ACS_URCORNER);
+			//lower left
+			mvaddch(16, COLS / 2 - 16, ACS_LLCORNER);
+			//lower right
+			mvaddch(16, COLS / 2 + 12, ACS_LRCORNER);
+			refresh();
+
+
+
+			ss = stringstream();
+			ss << "PointShop\t\t  ";
+			move(4, COLS / 2 - 14);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "(L) Large Bomb [75c]";
+			move(6, COLS / 2 - 14);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "(S) Strong Bomb [75c]";
+			move(8, COLS / 2 - 14);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "(H) Health Pack [50c]";
+			move(10, COLS / 2 - 14);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "(P) Petrol Jerrycan [25c]";
+			move(12, COLS / 2 - 14);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "                          ";
+			move(13, COLS / 2 - 14);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "                          ";
+			move(14, COLS / 2 - 14);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "                   ";
+			move(15, COLS / 2 - 14);
+			addstr(ss.str().c_str());
+
+
+			ss = stringstream();
+			ss << "(B) Back";
+			move(15, COLS / 2 + 3);
+			addstr(ss.str().c_str());
+			refresh();
+		}
+
+		else if (butter == true)
+		{
+			stringstream ss;
+
+			for (unsigned int i = 0; i < 28; i++)
+			{
+				mvaddch(2, COLS / 2 - 21 + i, ACS_HLINE);
+				mvaddch(16, COLS / 2 - 21 + i, ACS_HLINE);
+			}
+
+			for (unsigned int i = 0; i < 14; i++)
+			{
+				mvaddch(2 + i, COLS / 2 - 21, ACS_VLINE);
+				mvaddch(2 + i, COLS / 2 + 7, ACS_VLINE);
+			}
+
+			//this means move to this location (row, col, ch) and add the char
+			//upper left
+			mvaddch(2, COLS / 2 - 21, ACS_ULCORNER);
+			//upper right
+			mvaddch(2, COLS / 2 + 7, ACS_URCORNER);
+			//lower left
+			mvaddch(16, COLS / 2 - 21, ACS_LLCORNER);
+			//lower right
+			mvaddch(16, COLS / 2 + 7, ACS_LRCORNER);
+			refresh();
+
+
+
+			ss = stringstream();
+			ss << "PointShop\t\t  ";
+			move(4, COLS / 2 - 19);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "(L) Large Bomb [75c]";
+			move(6, COLS / 2 - 19);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "(S) Strong Bomb [75c]";
+			move(8, COLS / 2 - 19);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "(H) Health Pack [50c]";
+			move(10, COLS / 2 - 19);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "(P) Petrol Jerrycan [25c]";
+			move(12, COLS / 2 - 19);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "                          ";
+			move(13, COLS / 2 - 19);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "                          ";
+			move(14, COLS / 2 - 19);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << "                   ";
+			move(15, COLS / 2 - 19);
+			addstr(ss.str().c_str());
+
+
+			ss = stringstream();
+			ss << "(B) Back";
+			move(15, COLS / 2 - 2);
+			addstr(ss.str().c_str());
+			refresh();
+
+
+			//Buttered Toast (24 lines) should go from 12-36    width
+			//////////////////////////////////////////////////////////////////////////////////////////////////////
+			int x = 2;
+
+			ss = stringstream();
+			ss << setw(46) << left << "          o                o";
+			move(12 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "        __|________________|__";
+			move(13 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "       /                      \\";
+			move(14 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "      |     __          __     |";
+			move(15 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "     (|    {_;}        {;_}    |)";
+			move(16 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "      |                        |";
+			move(17 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "      |                        |";
+			move(18 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "       \\                      /";
+			move(19 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "        \\_____[~~~~~~~~]_____/";
+			move(20 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "  __   ___________||___________   __   \\ | / ";
+			move(21 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << " {  }=|    ________________    |={  }  -[=]_/";
+			move(22 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "  ||  |   /      ooo   ooo \\   |   \\\\   //";
+			move(23 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "  ||  |  |       ooooooooo  |  |    \\\\_//";
+			move(24 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << " (  ) |  |         ooooo    |  |     \\_/";
+			move(25 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "  ||  |  |___________o______|  |";
+			move(26 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << " [=]\\ |        ___  ___        |";
+			move(27 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << " /|\\   \\_______/  \\__/_ \\_____/";
+			move(28 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "            \\\\ _\\_ _ _ /_/";
+			move(29 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "                \\_\\_/_/";
+			move(30 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "                   ##";
+			move(31 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "                   ## ";
+			move(32 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "         #        # ##       # #  ";
+			move(33 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "       # # #  # # ##  # #  # # ";
+			move(34 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "        # #  # # ## # ## # # #  #";
+			move(35 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+			ss = stringstream();
+			ss << setw(46) << left << "       # ##  ##  ##  # ## #  ##  #";
+			move(36 + x, COLS / 2 + 13);
+			addstr(ss.str().c_str());
+
+
+			if (ft == true)
+			{
+				ss = stringstream();
+				ss << setw(50) << left << "Hey! I'm Buttered Toast, but you can call me . . .";
+				move(12, COLS / 2 + 9);
+				addstr(ss.str().c_str());
+				refresh();
+				Sleep(2750);
+				refresh();
+			
+				ss = stringstream();
+				ss << setw(50) << left << "         Butters. Welcome to the shop!";
+				move(12, COLS / 2 + 9);
+				addstr(ss.str().c_str());
+				refresh();
+				Sleep(2500);
+				refresh();
+				ft = false;
+
+				ss = stringstream();
+				ss << setw(49) << left << "";
+				move(12, COLS / 2 + 10);
+				addstr(ss.str().c_str());
+				refresh();
+			}
+
+			refresh();
+			//////////////////////////////////////////////////////////////////////////////////////////////////////
+		}
+
 		stringstream ss;
-
-		for (unsigned int i = 0; i < 28; i++)
-		{
-			mvaddch(2, COLS / 2 - 16 + i, ACS_HLINE);
-			mvaddch(16, COLS / 2 - 16 + i, ACS_HLINE);
-		}
-
-		for (unsigned int i = 0; i < 14; i++)
-		{
-			mvaddch(2 + i, COLS / 2 - 16, ACS_VLINE);
-			mvaddch(2 + i, COLS / 2 + 12, ACS_VLINE);
-		}
-
-		//this means move to this location (row, col, ch) and add the char
-		//upper left
-		mvaddch(2, COLS / 2 - 16, ACS_ULCORNER);
-		//upper right
-		mvaddch(2, COLS / 2 + 12, ACS_URCORNER);
-		//lower left
-		mvaddch(16, COLS / 2 - 16, ACS_LLCORNER);
-		//lower right
-		mvaddch(16, COLS / 2 + 12, ACS_LRCORNER);
-		refresh();
-
-
-
-		ss = stringstream();
-		ss << "PointShop\t\t  ";
-		move(4, COLS / 2 - 14);
-		addstr(ss.str().c_str());
-
-		ss = stringstream();
-		ss << "(L) Large Bomb [75c]";
-		move(6, COLS / 2 - 14);
-		addstr(ss.str().c_str());
-
-		ss = stringstream();
-		ss << "(S) Strong Bomb [75c]";
-		move(8, COLS / 2 - 14);
-		addstr(ss.str().c_str());
-
-		ss = stringstream();
-		ss << "(H) Health Pack [50c]";
-		move(10, COLS / 2 - 14);
-		addstr(ss.str().c_str());
-
-		ss = stringstream();
-		ss << "(P) Petrol Jerrycan [25c]";
-		move(12, COLS / 2 - 14);
-		addstr(ss.str().c_str());
-
-		ss = stringstream();
-		ss << "                           ";
-		move(13, COLS / 2 - 15);
-		addstr(ss.str().c_str());
-
-		ss = stringstream();
-		ss << "                           ";
-		move(14, COLS / 2 - 15);
-		addstr(ss.str().c_str());
-
-		ss = stringstream();
-		ss << "                   ";
-		move(15, COLS / 2 - 15);
-		addstr(ss.str().c_str());
-
-
-		ss = stringstream();
-		ss << "(B) Back";
-		move(15, COLS / 2 + 3);
-		addstr(ss.str().c_str());
-		refresh();
+		int r = 4;
+	
 
 		int c = getch();
 		switch (c)
@@ -1140,8 +1411,50 @@ void Pointshop(Ground & g, Player * players, int turn)
 		case 'b':
 		case 'B':
 		{
-			ps = false;
-			break;
+			if (butter == true)
+			{
+				r = rand() % 3;
+			}
+
+			if (r == 0)
+			{
+				ss = stringstream();
+				ss << "Leaving Already?";
+				move(12, COLS / 2 + 24);
+				addstr(ss.str().c_str());
+				refresh();
+				Sleep(2000);
+				ps = false;
+				break;
+			}
+			else if (r == 1)
+			{
+				ss = stringstream();
+				ss << "Is it something I said?";
+				move(12, COLS / 2 + 21);
+				addstr(ss.str().c_str());
+				refresh();
+				Sleep(2000);
+				ps = false;
+				break;
+			}
+
+			else if (r == 2)
+			{
+				ss = stringstream();
+				ss << "Good luck out there!";
+				move(12, COLS / 2 + 23);
+				addstr(ss.str().c_str());
+				refresh();
+				Sleep(2000);
+				ps = false;
+				break;
+			}
+			else
+			{
+				ps = false;
+				break;
+			}
 		}
 
 		//Large Bomb - make bomb radius check bigger 75
@@ -1150,8 +1463,25 @@ void Pointshop(Ground & g, Player * players, int turn)
 		{
 			char credit = 128;
 
+
 			if (players[turn].bomb_type != 0)
 			{
+				if (butter == true)
+				{
+					ss = stringstream();
+					ss << "What are you trying to compensate for?";
+					move(12, COLS / 2 + 14);
+					addstr(ss.str().c_str());
+
+					ss = stringstream();
+					ss << "A bomb is already equpped.";
+					move(14, COLS / 2 - 19);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(2000);
+					break;
+				}
+
 				ss = stringstream();
 				ss << "A bomb is already equpped.";
 				move(14, COLS / 2 - 14);
@@ -1163,6 +1493,40 @@ void Pointshop(Ground & g, Player * players, int turn)
 
 			else if (players[turn].points < 75)
 			{
+				if (butter == true)
+				{
+					r = rand() % 3;
+					
+					if (r == 0)
+					{
+						ss = stringstream();
+						ss << "Does this look like a GoFundMe to you?";
+						move(12, COLS / 2 + 14);
+						addstr(ss.str().c_str());
+					}
+					else if (r == 1)
+					{
+						ss = stringstream();
+						ss << "Looks like you are " << 75 - players[turn].points << " credits short.";
+						move(12, COLS / 2 + 15);
+						addstr(ss.str().c_str());
+					}
+					else if (r == 2)
+					{
+						ss = stringstream();
+						ss << "Leave your purse in your other tank?";
+						move(12, COLS / 2 + 15);
+						addstr(ss.str().c_str());
+					}
+					ss = stringstream();
+					ss << "Not enough " << credit << "'s.";
+					move(14, COLS / 2 - 19);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(2000);
+					break;
+				}
+
 				ss = stringstream();
 				ss << "Not enough " << credit << "'s.";
 				move(14, COLS / 2 - 14);
@@ -1170,10 +1534,41 @@ void Pointshop(Ground & g, Player * players, int turn)
 				refresh();
 				Sleep(1200);
 				break;
+				
 			}
 
 			else
 			{
+				if (butter == true)
+				{
+					r = rand() % 2;
+
+					if (r == 0)
+					{
+						ss = stringstream();
+						ss << "One sissy missle comin' right up!.";
+						move(12, COLS / 2 + 16);
+						addstr(ss.str().c_str());
+					}
+					else if (r == 1)
+					{
+						ss = stringstream();
+						ss << "Losing that bad?";
+						move(12, COLS / 2 + 23);
+						addstr(ss.str().c_str());
+					}
+					ss = stringstream();
+					ss << "- 75" << credit << "'s.";
+					move(14, COLS / 2 - 19);
+					addstr(ss.str().c_str());
+
+					players[turn].points = players[turn].points - 75;
+					players[turn].bomb_type = 2;
+					refresh();
+					Sleep(2000);
+					break;
+				}
+
 				ss = stringstream();
 				ss << "- 75" << credit << "'s.";
 				move(14, COLS / 2 - 14);
@@ -1196,6 +1591,21 @@ void Pointshop(Ground & g, Player * players, int turn)
 
 			if (players[turn].bomb_type != 0)
 			{
+				if (butter == true)
+				{
+					ss = stringstream();
+					ss << "What are you trying to compensate for?";
+					move(12, COLS / 2 + 14);
+					addstr(ss.str().c_str());
+
+					ss = stringstream();
+					ss << "A bomb is already equpped.";
+					move(14, COLS / 2 - 19);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(2000);
+					break;
+				}
 				ss = stringstream();
 				ss << "A bomb is already equpped.";
 				move(14, COLS / 2 - 14);
@@ -1207,6 +1617,39 @@ void Pointshop(Ground & g, Player * players, int turn)
 
 			else if (players[turn].points < 75)
 			{
+				if (butter == true)
+				{
+					r = rand() % 3;
+
+					if (r == 0)
+					{
+						ss = stringstream();
+						ss << "Does this look like a GoFundMe to you?";
+						move(12, COLS / 2 + 14);
+						addstr(ss.str().c_str());
+					}
+					else if (r == 1)
+					{
+						ss = stringstream();
+						ss << "Looks like you are " << 75 - players[turn].points << " credits short.";
+						move(12, COLS / 2 + 15);
+						addstr(ss.str().c_str());
+					}
+					else if (r == 2)
+					{
+						ss = stringstream();
+						ss << "Leave your purse in your other tank?";
+						move(12, COLS / 2 + 15);
+						addstr(ss.str().c_str());
+					}
+					ss = stringstream();
+					ss << "Not enough " << credit << "'s.";
+					move(14, COLS / 2 - 19);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(2000);
+					break;
+				}
 				ss = stringstream();
 				ss << "Not enough " << credit << "'s.";
 				move(14, COLS / 2 - 14);
@@ -1214,10 +1657,41 @@ void Pointshop(Ground & g, Player * players, int turn)
 				refresh();
 				Sleep(1200);
 				break;
+				
 			}
 
 			else
 			{
+				if (butter == true)
+				{
+					r = rand() % 2;
+
+					if (r == 0)
+					{
+						ss = stringstream();
+						ss << "One sissy missle comin' right up!.";
+						move(12, COLS / 2 + 16);
+						addstr(ss.str().c_str());
+					}
+					else if (r == 1)
+					{
+						ss = stringstream();
+						ss << "Losing that bad?";
+						move(12, COLS / 2 + 23);
+						addstr(ss.str().c_str());
+					}
+					ss = stringstream();
+					ss << "- 75" << credit << "'s.";
+					move(14, COLS / 2 - 19);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(2000);
+
+					players[turn].points = players[turn].points - 75;
+					players[turn].bomb_type = 1;
+					break;
+				}
+
 				ss = stringstream();
 				ss << "- 75" << credit << "'s.";
 				move(14, COLS / 2 - 14);
@@ -1239,6 +1713,40 @@ void Pointshop(Ground & g, Player * players, int turn)
 
 			if (players[turn].points < 50)
 			{
+				if (butter == true)
+				{
+					r = rand() % 3;
+
+					if (r == 0)
+					{
+						ss = stringstream();
+						ss << "Does this look like a GoFundMe to you?";
+						move(12, COLS / 2 + 14);
+						addstr(ss.str().c_str());
+					}
+					else if (r == 1)
+					{
+						ss = stringstream();
+						ss << "Looks like you are " << 75 - players[turn].points << " credits short.";
+						move(12, COLS / 2 + 15);
+						addstr(ss.str().c_str());
+					}
+					else if (r == 2)
+					{
+						ss = stringstream();
+						ss << "Leave your purse in your other tank?";
+						move(12, COLS / 2 + 15);
+						addstr(ss.str().c_str());
+					}
+					ss = stringstream();
+					ss << "Not enough " << credit << "'s.";
+					move(14, COLS / 2 - 19);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(2000);
+					break;
+				}
+
 				ss = stringstream();
 				ss << "Not enough " << credit << "'s.";
 				move(14, COLS / 2 - 14);
@@ -1250,6 +1758,22 @@ void Pointshop(Ground & g, Player * players, int turn)
 
 			else if (players[turn].health == 5)
 			{
+				if (butter == true)
+				{
+					ss = stringstream();
+					ss << "What are you trying to compensate for?";
+					move(12, COLS / 2 + 14);
+					addstr(ss.str().c_str());
+
+					ss = stringstream();
+					ss << "At max health.";
+					move(14, COLS / 2 - 19);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(2000);
+					break;
+				}
+
 				ss = stringstream();
 				ss << "At max health.";
 				move(14, COLS / 2 - 14);
@@ -1261,6 +1785,46 @@ void Pointshop(Ground & g, Player * players, int turn)
 
 			else
 			{
+
+				if (butter == true)
+				{
+					r = rand() % 3;
+
+					if (r == 0)
+					{
+						ss = stringstream();
+						ss << "Here's a med kit, patch yourself up soldier!";
+						move(12, COLS / 2 + 12);
+						addstr(ss.str().c_str());
+					}
+					else if (r == 1)
+					{
+						ss = stringstream();
+						ss << "Need a Band-Aid?";
+						move(12, COLS / 2 + 24);
+						addstr(ss.str().c_str());
+					}
+					else if (r == 2)
+					{
+						ss = stringstream();
+						ss << "You know, I got over a 30% on the MCAT.";
+						move(12, COLS / 2 + 15);
+						addstr(ss.str().c_str());
+					}
+					ss = stringstream();
+					ss << "- 50" << credit << "'s.";
+					move(14, COLS / 2 - 19);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(2000);
+
+					players[turn].points = players[turn].points - 50;
+					players[turn].health++;
+					erase();
+					DrawScreen(g, players, turn);
+					refresh();
+					break;
+				}
 
 				ss = stringstream();
 				ss << "- 50" << credit << "'s.";
@@ -1287,6 +1851,22 @@ void Pointshop(Ground & g, Player * players, int turn)
 
 			if (players[turn].gas == gas_toggle)
 			{
+				if (butter == true)
+				{
+					ss = stringstream();
+					ss << "What are you trying to compensate for?";
+					move(12, COLS / 2 + 14);
+					addstr(ss.str().c_str());
+
+					ss = stringstream();
+					ss << "Petrol Full.";
+					move(14, COLS / 2 - 19);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(2000);
+					break;
+				}
+
 				ss = stringstream();
 				ss << "Petrol Full.";
 				move(14, COLS / 2 - 14);
@@ -1298,6 +1878,40 @@ void Pointshop(Ground & g, Player * players, int turn)
 
 			else if (players[turn].points < 25)
 			{
+				if (butter == true)
+				{
+					r = rand() % 3;
+
+					if (r == 0)
+					{
+						ss = stringstream();
+						ss << "Does this look like a GoFundMe to you?";
+						move(12, COLS / 2 + 14);
+						addstr(ss.str().c_str());
+					}
+					else if (r == 1)
+					{
+						ss = stringstream();
+						ss << "Looks like you are " << 75 - players[turn].points << " credits short.";
+						move(12, COLS / 2 + 15);
+						addstr(ss.str().c_str());
+					}
+					else if (r == 2)
+					{
+						ss = stringstream();
+						ss << "Leave your purse in your other tank?";
+						move(12, COLS / 2 + 15);
+						addstr(ss.str().c_str());
+					}
+					ss = stringstream();
+					ss << "Not enough " << credit << "'s.";
+					move(14, COLS / 2 - 19);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(2000);
+					break;
+				}
+
 				ss = stringstream();
 				ss << "Not enough " << credit << "'s.";
 				move(14, COLS / 2 - 14);
@@ -1309,6 +1923,28 @@ void Pointshop(Ground & g, Player * players, int turn)
 
 			else
 			{
+				if (butter == true)
+				{
+					ss = stringstream();
+					ss << "Don't drink and drive!";
+					move(12, COLS / 2 + 21);
+					addstr(ss.str().c_str());
+
+					players[turn].points = players[turn].points - 25;
+					players[turn].gas = gas_toggle;
+
+					ss = stringstream();
+					ss << "- 25" << credit << "'s.";
+					move(14, COLS / 2 - 19);
+					addstr(ss.str().c_str());
+					refresh();
+					Sleep(2000);
+
+					erase();
+					DrawScreen(g, players, turn);
+					refresh();
+					break;
+				}
 				players[turn].points = players[turn].points - 25;
 				players[turn].gas = gas_toggle;
 
@@ -1323,6 +1959,7 @@ void Pointshop(Ground & g, Player * players, int turn)
 				DrawScreen(g, players, turn);
 				refresh();
 				break;
+				
 			}
 
 		}
@@ -1367,6 +2004,11 @@ void Log()
 
 		stringstream ss;
 		ss << "https://github.com/pafischer1995/Tanks-Curses";
+		move(LINES / 2 + 2, COLS / 2 - 22);
+		addstr(ss.str().c_str());
+
+		ss = stringstream();
+		ss << "https://github.com/pafischer1995/a/blob/master/README.md";
 		move(LINES / 2, COLS / 2 - 22);
 		addstr(ss.str().c_str());
 
@@ -1375,11 +2017,12 @@ void Log()
 		move(LINES / 2 - 3, COLS / 2 - 7);
 		addstr(ss.str().c_str());
 
+
 		ss = stringstream();
 		ss << "(B) Back";
 		move(LINES - 2, COLS - 10);
 		addstr(ss.str().c_str());
-
+		refresh();
 		char c = getch();
 		switch (c)
 		{
@@ -1913,5 +2556,5 @@ int main(int argc, char * argv[])
 
 	//try to make health hearts
 	//if you can get unicode or UTF-8 to work change ground as well
-
+	//because I moved ground over one to the right to fix the smoothing of the floor the ground.at(1) doesn't change. oopsies.
 }
